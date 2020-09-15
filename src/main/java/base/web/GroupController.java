@@ -25,7 +25,7 @@ public class GroupController {
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    @ExceptionHandler(value = HandlerExceptionNotFound.class)
+    @ExceptionHandler(value = base.web.HandlerExceptionNotFound.class)
     public ResponseEntity<List<Group>> getAllProduct() {
 
         List<Group> listGroup = serviceDatabase.findAllGroup();
@@ -62,6 +62,8 @@ public class GroupController {
     // RequestMethod.POST
     // http://localhost:8080/group/add  + object
     @RequestMapping(value = "add", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+    @CrossOrigin
     public ResponseEntity<Group> saveProduct(@RequestBody @Valid Group gr) {
 
         if (gr == null)
@@ -79,9 +81,12 @@ public class GroupController {
     }
 
 
+
     // RequestMethod.DELETE
     // http://localhost:8080/group/delete?id=10
     @RequestMapping(value = "delete", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+    @CrossOrigin
     public ResponseEntity<Group> deleteProduct(       @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         if (!serviceDatabase.isExistsGroupById(groupId))
@@ -93,6 +98,7 @@ public class GroupController {
         serviceDatabase.deleteGroup(groupId);
         return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
     }
+
 
 
 

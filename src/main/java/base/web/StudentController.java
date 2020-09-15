@@ -78,6 +78,8 @@ public class StudentController {
     // RequestMethod.POST
     // http://localhost:8080/student?id=11   + object
     @RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+    @CrossOrigin
     public ResponseEntity<Student> saveProduct(@RequestBody @Valid Student student,
                                                @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
@@ -93,15 +95,49 @@ public class StudentController {
         Student temp = serviceDatabase.addStudentByGroupId(student, groupId);
 
         if (temp != null)
-               return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.CREATED);
+            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.CREATED);
         else
             return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
 
+    // RequestMethod.PUT
+    // http://localhost:8080/student?id=11   + object
+    @RequestMapping(value = "", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<Student> updateProduct(@RequestBody @Valid Student student,
+                                                 @RequestParam(value="id", required=false, defaultValue="")  long studentIt) {
+
+        if (student == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        if (serviceDatabase.isExistsStudent(student.getName(),student.getSurname())) {
+
+            Student oldSt = serviceDatabase.findStudentByNameSurName(student.getName(),student.getSurname());
+            if (oldSt.equals(student))
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+
+        if (studentIt != student.getId())
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
+
+        Student temp = serviceDatabase.updateStudentId(studentIt, student);
+
+        if (temp != null)
+            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+
+
     // RequestMethod.DELETE
     // http://localhost:8080/student/delete?name=name1&sname=surname1
     @RequestMapping(value = "delete", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+    @CrossOrigin
+
     public ResponseEntity<Student> deleteProduct(       @RequestParam(value="name", required=false, defaultValue="")  String name,
                                                         @RequestParam(value="sname", required=false, defaultValue="") String sname)  {
 

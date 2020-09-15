@@ -85,12 +85,16 @@ public class ServiceDatabase {
     }
 
     @Transactional (readOnly = true)
+    public Student findStudentByNameSurName(String n, String sn) {
+        Optional<Student> op = studentRepository.findByNameAndSurname(n,sn);
+        return op.get();
+    }
+
+    @Transactional (readOnly = true)
     public boolean isExistsStudent(long groupId) {
         Optional<Student> op = studentRepository.findById(groupId);
         return  op.isPresent();
     }
-
-
 
     @Transactional (readOnly = true)
     public List<Student> findAllStudent() {
@@ -177,4 +181,32 @@ public class ServiceDatabase {
     public Student findStudentById(long groupId) {
         return studentRepository.findById(groupId).orElse(null);
     }
+
+
+    @Transactional
+    public Student updateStudentId(long studentId, Student newStudent) {
+
+        Student sOld = studentRepository.findById(studentId).get();
+        sOld.setName(newStudent.getName());
+        sOld.setSurname(newStudent.getSurname());
+        sOld.setDateBirth(newStudent.getDateBirth());
+        studentRepository.save(sOld);
+
+        if (sOld.getGroupId() != newStudent.getGroupId()){
+            Group rg1 = groupRepository.findById(sOld.getGroupId()).get();
+            Group rg2 = groupRepository.findById(newStudent.getGroupId()).get();
+
+          /*  rg1.getListStudents().remove(sOld);
+            rg2.getListStudents().add(sOld);*/
+            sOld.setGroup(rg2);
+
+         /*   groupRepository.save(rg1);
+            groupRepository.save(rg2);
+            studentRepository.save(sOld);*/
+
+        }
+        return studentRepository.findById(studentId).get();
+    }
+
+
 }
