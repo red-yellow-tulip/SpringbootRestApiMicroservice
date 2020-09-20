@@ -148,6 +148,11 @@ public class ServiceDatabase {
 
     @Transactional
     public Group addNewGroup(Group gr) {
+
+        if (universityRepository.findAll().size() == 0){
+            createRandomUniversity();
+        }
+
         University un = universityRepository.findByUniversityId(universityId).get();
         gr.setUniversity(un);
         un.getListGroup().add(gr);
@@ -207,6 +212,14 @@ public class ServiceDatabase {
         }
         return studentRepository.findById(studentId).get();
     }
+
+    @Transactional
+    private void createRandomUniversity() {
+
+        University un = new University(universityId,"Bestuniversity_random");
+        universityRepository.save(un);
+    }
+
 
 
 }
