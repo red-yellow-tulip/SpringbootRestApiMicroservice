@@ -55,6 +55,7 @@ create unique index university_id_idx  on university_schemas.university(id);
 create unique index university_un_id_idx  on university_schemas.university(university_id);
 
 
+
 select * from university_schemas.university;
 select * from university_schemas.student_group;
 select * from university_schemas.student;
@@ -62,4 +63,6 @@ select * from university_schemas.student;
 delete from university_schemas.student;
 delete from university_schemas.student_group;
 delete from university_schemas.university;
+
+
 

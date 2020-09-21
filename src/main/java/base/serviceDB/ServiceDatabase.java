@@ -3,6 +3,7 @@ package base.serviceDB;
 import base.entity.Group;
 import base.entity.Student;
 import base.entity.University;
+import jdk.internal.org.objectweb.asm.tree.analysis.SourceValue;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -214,12 +215,14 @@ public class ServiceDatabase {
     }
 
     @Transactional
-    private void createRandomUniversity() {
+    void createRandomUniversity() {
 
         University un = new University(universityId,"Bestuniversity_random");
         universityRepository.save(un);
     }
 
-
-
+    @Transactional
+    public List<University> findAllUniversity() {
+        return universityRepository.findAll();
+    }
 }
