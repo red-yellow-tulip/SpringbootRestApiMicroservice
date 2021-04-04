@@ -1,50 +1,39 @@
-
-import base.Main;
+import base.StudentMicroserviceRunner;
 import base.entity.Group;
 import base.entity.Student;
 import base.entity.University;
 import base.serviceDB.ServiceDatabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@ContextConfiguration(classes = Main.class)
-@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = StudentMicroserviceRunner.class)
+@ActiveProfiles("test")
 public class TestDBService {
 
     private static final Logger log = LogManager.getLogger();
 
+
+
     @Resource
     private ServiceDatabase service;
-    @Before
+    @BeforeEach
     public void testBefore() {
         assertNotNull(service);
         service.clearTable();
     }
 
     @Test
-    public void Test0() {
-        assertNotNull(service);
-        service.clearTable();
-    }
-
-    @Test
-    public void Test(){
+    public void findUniversityTest(){
 
         long id = 100L;
 
@@ -61,7 +50,7 @@ public class TestDBService {
     }
 
     @Test
-    public void Test2(){
+    public void findGroupIdTest2(){
 
         long id = 100L;
         University un = new University(id,"Best university");
@@ -78,7 +67,7 @@ public class TestDBService {
     }
 
     @Test
-    public void Test3(){
+    public void findGroupTest(){
 
         long id = 100L, groupId = 10;
         University un = new University(id,"Best university");
@@ -102,7 +91,7 @@ public class TestDBService {
     }
 
     @Test
-    public void Test4(){
+    public void findStudentByGroupIdTest4(){
 
         long id = 100L, groupId = 10;
         University un = new University(id,"Best university");
@@ -143,7 +132,7 @@ public class TestDBService {
     }
 
     @Test
-    public void Test5() {
+    public void createTest() {
 
         service.clearTable();
 

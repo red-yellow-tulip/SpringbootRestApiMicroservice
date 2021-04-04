@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>groupId</groupId>
-    <artifactId>StudentMicroService_boot</artifactId>
+        <artifactId>StudentMicroService_boot</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -53,6 +53,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -94,6 +105,14 @@
             <version>2.13.3</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -102,7 +121,65 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>show-profiles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+
+                <properties>
+                    <spring.datasource.driverClassName>org.postgresql.Driver</spring.datasource.driverClassName>
+                    <spring.datasource.url>jdbc:postgresql://127.0.0.1:5432/university?currentSchema=university_schemas</spring.datasource.url>
+                    <spring.datasource.username>university</spring.datasource.username>
+                    <spring.datasource.password>university</spring.datasource.password>
+                    <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
+                    <spring.jpa.generate-ddl>true</spring.jpa.generate-ddl>
+                    <spring.jpa.hibernate.ddl-auto>update</spring.jpa.hibernate.ddl-auto>
+                    <server.port>8095</server.port>
+                    <spring.application.name>name</spring.application.name>
+                    <logging.file.path>/logs</logging.file.path>
+                    <logging.level.root>INFO</logging.level.root>
+                </properties>
+        </profile>
+
+        <profile>
+            <id>test</id>
+                <activation>
+                    <activeByDefault>true</activeByDefault>
+                </activation>
+                <properties>
+                    <spring.datasource.driverClassName>org.postgresql.Driver</spring.datasource.driverClassName>
+                    <spring.datasource.url>jdbc:postgresql://localhost:5432/university?currentSchema=university_schemas</spring.datasource.url>
+                    <spring.datasource.username>university</spring.datasource.username>
+                    <spring.datasource.password>university</spring.datasource.password>
+                    <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
+                    <spring.jpa.generate-ddl>true</spring.jpa.generate-ddl>
+                    <spring.jpa.hibernate.ddl-auto>update</spring.jpa.hibernate.ddl-auto>
+                    <server.port>11095</server.port>
+                    <spring.application.name>name</spring.application.name>
+                    <logging.file.path>/logs</logging.file.path>
+                    <logging.level.root>INFO</logging.level.root>
+                </properties>
+        </profile>
+    </profiles>
+
+
 
 </project>

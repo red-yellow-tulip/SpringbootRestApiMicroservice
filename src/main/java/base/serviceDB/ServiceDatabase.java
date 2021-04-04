@@ -142,7 +142,7 @@ public class ServiceDatabase {
 
     @Transactional (readOnly = true)
     public Group findGroupById(long groupId) {
-        Optional<Group> g = groupRepository.findById(groupId);
+        Optional<Group> g = groupRepository.findByGroupId(groupId);
         return g.orElse(null);
     }
 

@@ -1,5 +1,4 @@
 package base;
-
 import base.entity.Group;
 import base.entity.Student;
 import base.entity.University;
@@ -10,13 +9,12 @@ import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Date;
 
 @SpringBootApplication
-public class Main implements  ApplicationRunner{
+public class StudentMicroserviceRunner implements  ApplicationRunner{
 
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final Logger log = LoggerFactory.getLogger(StudentMicroserviceRunner.class);
     @Autowired
     private ServiceDatabase serviceDatabase;
 
@@ -24,7 +22,7 @@ public class Main implements  ApplicationRunner{
     String port;
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(StudentMicroserviceRunner.class, args);
     }
 
     @Override
@@ -32,8 +30,8 @@ public class Main implements  ApplicationRunner{
         if (serviceDatabase.findAllUniversity().isEmpty())
             createDemoData();
         log.info("start...."+port);
-
     }
+
     private void createDemoData() {
 
         serviceDatabase.clearTable();
