@@ -31,36 +31,16 @@ public class TestDBService {
 
     @Resource
     private ServiceDatabase service;
-
     @Before
     public void testBefore() {
-
         assertNotNull(service);
-
         service.clearTable();
-
     }
 
     @Test
     public void Test0() {
-
-
-
         assertNotNull(service);
-
         service.clearTable();
-
-    }
-
-    @Test
-    public void Test0() {
-
-
-
-        assertNotNull(service);
-
-        service.clearTable();
-
     }
 
     @Test
@@ -78,7 +58,6 @@ public class TestDBService {
         assert (un != null);
         assert (un.getId() != null);
         log.info(un);
-
     }
 
     @Test
@@ -120,9 +99,7 @@ public class TestDBService {
         log.info(l);
         assert (l.size() == 10);
         assert (l.get(5) != null);
-
     }
-
 
     @Test
     public void Test4(){
@@ -164,8 +141,6 @@ public class TestDBService {
         log.info(l);
         assert (l.size() == 10);
     }
-
-
 
     @Test
     public void Test5() {

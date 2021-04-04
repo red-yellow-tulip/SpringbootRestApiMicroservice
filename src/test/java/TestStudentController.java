@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,27 +46,23 @@ public class TestStudentController {
     private static final Logger log = LogManager.getLogger();
 
     private RestTemplate restTemplate = new RestTemplate();
-
-
     @Resource
     private ServiceDatabase service;
 
-    private static final String url =      "http://localhost:8094/";
-    private static final String getAll =   url+"student/all";
-    private static final String filtr =    url+"student/filtr?name=nam&sname=surnam";
-    private static final String filtr1 =   url+"student/filtr?name=name5&sname=surname5";
-    private static final String groupId =  url+"student/group?id=10";
-    private static final String post =     url+"student?id=10";
-    private static final String del =      url+"student/delete?name=name9&sname=surname9";
+    private final String url =      "http://localhost:8095/";
+    private final String getAll =   url+"student/all";
+    private final String filtr =    url+"student/filtr?name=nam&sname=surnam";
+    private final String filtr1 =   url+"student/filtr?name=name5&sname=surname5";
+    private final String groupId =  url+"student/group?id=10";
+    private final String post =     url+"student?id=10";
+    private final String del =      url+"student/delete?name=name9&sname=surname9";
 
 
     @Before
     public void testBefore() {
 
         assertNotNull(service);
-
         service.clearTable();
-
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
@@ -31,23 +32,20 @@ import static org.junit.Assert.assertNotNull;
 public class TestGroupController {
 
     private static final Logger log = LogManager.getLogger();
-
     private RestTemplate restTemplate = new RestTemplate();
-
     @Resource
     private ServiceDatabase service;
 
-    private static final String url = "http://localhost:8095/";
-    private static final String getAll = url + "group/all";
-    private static final String filtr = url + "group/filtr?name=group2";
-    private static final String filtr1 = url + "group/filtr?name=group";
-    private static final String groupId = url + "group?id=50";
-    private static final String post = url + "group/add";
-    private static final String del = url + "group/delete?id=55";
+    private final String url =      "http://localhost:8095/";
+    private final String getAll = url + "group/all";
+    private final String filtr = url + "group/filtr?name=group2";
+    private final String filtr1 = url + "group/filtr?name=group";
+    private final String groupId = url + "group?id=50";
+    private final String post = url + "group/add";
+    private final String del = url + "group/delete?id=55";
 
     @Before
     public void testBefore() {
-
         assertNotNull(service);
         service.clearTable();
     }

@@ -17,8 +17,6 @@ import java.util.Date;
 public class Main implements  ApplicationRunner{
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-
-
     @Autowired
     private ServiceDatabase serviceDatabase;
 
@@ -27,19 +25,15 @@ public class Main implements  ApplicationRunner{
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-
         if (serviceDatabase.findAllUniversity().isEmpty())
             createDemoData();
-
         log.info("start...."+port);
 
     }
-
     private void createDemoData() {
 
         serviceDatabase.clearTable();
@@ -56,11 +50,7 @@ public class Main implements  ApplicationRunner{
                 s.setGroup(gr);
                 gr.getListStudents().add(s);
             }
-
             un.getListGroup().add(gr);
-
-
-
         }
         serviceDatabase.saveUniversity(un);
     }
