@@ -53,6 +53,17 @@ public class TestDBService {
     }
 
     @Test
+    public void Test0() {
+
+
+
+        assertNotNull(service);
+
+        service.clearTable();
+
+    }
+
+    @Test
     public void Test(){
 
         long id = 100L;
