@@ -40,7 +40,7 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 @ContextConfiguration (classes = Main.class)
 @RunWith(SpringRunner.class)
-public class testStudentController {
+public class TestStudentController {
 
     private static final Logger log = LogManager.getLogger();
 
@@ -50,7 +50,7 @@ public class testStudentController {
     @Resource
     private ServiceDatabase service;
 
-    private static final String url =      "http://localhost:8090/";
+    private static final String url =      "http://localhost:8094/";
     private static final String getAll =   url+"student/all";
     private static final String filtr =    url+"student/filtr?name=nam&sname=surnam";
     private static final String filtr1 =   url+"student/filtr?name=name5&sname=surname5";

@@ -1,6 +1,7 @@
 package base.web;
 
 import base.entity.Group;
+import base.logging.LogExecutionTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import java.util.List;
 @RequestMapping("/group")
 public class GroupController {
 
-
     @Autowired
     private ServiceDatabase serviceDatabase;
 
@@ -26,6 +26,7 @@ public class GroupController {
     @ResponseBody
     @CrossOrigin
     @ExceptionHandler(value = base.web.HandlerExceptionNotFound.class)
+    @LogExecutionTime
     public ResponseEntity<List<Group>> getAllProduct() {
 
         List<Group> listGroup = serviceDatabase.findAllGroup();
@@ -37,6 +38,7 @@ public class GroupController {
     @RequestMapping(value = "/filtr", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
+    @LogExecutionTime
     public ResponseEntity<List<Group>> getFilterProduct(@RequestParam(value="name", required=false, defaultValue="")  String groupName) {
 
         List<Group> listGroup  = serviceDatabase.findAllGroupByName(groupName);
@@ -49,11 +51,13 @@ public class GroupController {
     @ResponseBody
     @CrossOrigin
     @ExceptionHandler(value = HandlerExceptionNotFound.class)
+    @LogExecutionTime
     public ResponseEntity<Group> getFilterProduct(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         Group g  = serviceDatabase.findGroupById(groupId);
-        if (g == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (g == null) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(null);
+        }
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(g);
     }
@@ -64,6 +68,7 @@ public class GroupController {
     @RequestMapping(value = "add", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
+    @LogExecutionTime
     public ResponseEntity<Group> saveProduct(@RequestBody @Valid Group gr) {
 
         if (gr == null)
@@ -87,6 +92,7 @@ public class GroupController {
     @RequestMapping(value = "delete", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
+    @LogExecutionTime
     public ResponseEntity<Group> deleteProduct(       @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         if (!serviceDatabase.isExistsGroupById(groupId))

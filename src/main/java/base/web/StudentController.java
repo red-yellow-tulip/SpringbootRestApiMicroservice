@@ -106,6 +106,7 @@ public class StudentController {
     @RequestMapping(value = "", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
+
     public ResponseEntity<Student> updateProduct(@RequestBody @Valid Student student,
                                                  @RequestParam(value="id", required=false, defaultValue="")  long studentIt) {
 

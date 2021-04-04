@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 @ContextConfiguration(classes = Main.class)
 @RunWith(SpringRunner.class)
-public class testDBService {
+public class TestDBService {
 
     private static final Logger log = LogManager.getLogger();
 
@@ -34,6 +34,15 @@ public class testDBService {
 
     @Before
     public void testBefore() {
+
+        assertNotNull(service);
+
+        service.clearTable();
+
+    }
+
+    @Test
+    public void Test0() {
 
 
 
@@ -84,11 +93,11 @@ public class testDBService {
         long id = 100L, groupId = 10;
         University un = new University(id,"Best university");
 
-        Group gr = new Group(groupId,"group1");
+        Group gr = new Group(groupId,"demo_group1");
         gr.setUniversity(un);
 
         for(int i = 0; i< 10; i++){
-            Student s = new Student("name"+i,"surname"+i,new Date());
+            Student s = new Student("demo_name"+i,"demo_surname"+i,new Date());
             s.setGroup(gr);
             gr.getListStudents().add(s);
         }

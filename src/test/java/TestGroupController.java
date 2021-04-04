@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 @ContextConfiguration(classes = Main.class)
 @RunWith(SpringRunner.class)
-public class testGroupController {
+public class TestGroupController {
 
     private static final Logger log = LogManager.getLogger();
 
@@ -37,11 +37,11 @@ public class testGroupController {
     @Resource
     private ServiceDatabase service;
 
-    private static final String url = "http://localhost:8090/";
+    private static final String url = "http://localhost:8095/";
     private static final String getAll = url + "group/all";
     private static final String filtr = url + "group/filtr?name=group2";
     private static final String filtr1 = url + "group/filtr?name=group";
-    private static final String groupId = url + "group?id=52";
+    private static final String groupId = url + "group?id=50";
     private static final String post = url + "group/add";
     private static final String del = url + "group/delete?id=55";
 
@@ -49,9 +49,7 @@ public class testGroupController {
     public void testBefore() {
 
         assertNotNull(service);
-
         service.clearTable();
-
     }
 
 

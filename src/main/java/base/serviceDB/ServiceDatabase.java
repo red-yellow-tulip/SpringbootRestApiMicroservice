@@ -214,12 +214,14 @@ public class ServiceDatabase {
     }
 
     @Transactional
-    private void createRandomUniversity() {
+    void createRandomUniversity() {
 
         University un = new University(universityId,"Bestuniversity_random");
         universityRepository.save(un);
     }
 
-
-
+    @Transactional
+    public List<University> findAllUniversity() {
+        return universityRepository.findAll();
+    }
 }
