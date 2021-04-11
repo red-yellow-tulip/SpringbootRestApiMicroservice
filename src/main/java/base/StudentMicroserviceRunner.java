@@ -21,6 +21,9 @@ public class StudentMicroserviceRunner implements  ApplicationRunner{
     @Value("${server.port}")
     String port;
 
+    @Value("${spring.application.name}")
+    String name;
+
     public static void main(String[] args) {
         SpringApplication.run(StudentMicroserviceRunner.class, args);
     }
@@ -29,7 +32,7 @@ public class StudentMicroserviceRunner implements  ApplicationRunner{
     public void run(ApplicationArguments args) throws Exception {
         if (serviceDatabase.findAllUniversity().isEmpty())
             createDemoData();
-        log.info("start...."+port);
+        log.info(String.format("start app: %s, port: %s",name,port));
     }
 
     private void createDemoData() {

@@ -12,7 +12,6 @@ import java.util.Optional;
 @Transactional
 public interface StudentRepository extends  JpaRepository<Student, Long>{
 
-
     Optional<Student> findByNameAndSurname(String n, String sn);
 
     List<Student> findAllByNameLikeAndSurnameLike(String name, String sname);

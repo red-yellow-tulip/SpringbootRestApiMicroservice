@@ -1,37 +1,43 @@
+package rest;
+
 import base.StudentMicroserviceRunner;
 import base.entity.Group;
 import base.entity.Student;
 import base.entity.University;
 import base.serviceDB.ServiceDatabase;
 import base.web.config.SourceParameterWrapperStudent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
-@SpringBootTest
-@ContextConfiguration (classes = StudentMicroserviceRunner.class)
+@SpringBootTest (classes = StudentMicroserviceRunner.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class TestStudentController {
 
-    private RestTemplate restTemplate = new RestTemplate();
-    @Value("${server.port}")
-    String port;
+    private static final Logger log = LogManager.getLogger(TestStudentController.class.getName());
 
     @Resource
     private ServiceDatabase service;
+
+    //@Value("${server.port}")
+    @LocalServerPort
+    String port;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     private final String url =      "http://localhost:%s/";
     private final String getAll =   url+"student/all";
@@ -53,8 +59,9 @@ public class TestStudentController {
 
         addStudent();
         List<Student> allStudent = restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperStudent.ListWrapper.class);
-        assert(allStudent.size() == 10);
-        System.out.println(allStudent);
+        assertNotNull(allStudent);
+        assertEquals(allStudent.size() , 10);
+        log.trace(allStudent);
     }
 
     @Test
@@ -64,12 +71,14 @@ public class TestStudentController {
 
         //http://localhost:8080/student/filtr?name=name1&sname=surname1
         List<Student> allStudent = restTemplate.getForObject(String.format(filtr,port), SourceParameterWrapperStudent.ListWrapper.class);
-        assert(allStudent.size() == 10);
-        System.out.println(allStudent);
+        assertNotNull(allStudent);
+        assertEquals(allStudent.size() , 10);
+        log.trace(allStudent);
 
         List<Student> allStudent1 = restTemplate.getForObject(String.format(filtr1,port), SourceParameterWrapperStudent.ListWrapper.class);
-        assert(allStudent1.size() == 1);
-        System.out.println(allStudent1);
+        assertNotNull(allStudent1);
+        assertEquals(allStudent1.size(), 1);
+        log.trace(allStudent1);
     }
 
     @Test
@@ -77,8 +86,9 @@ public class TestStudentController {
 
         addStudent();
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
-        assert(allStudent.size() == 10);
-        System.out.println(allStudent);
+        assertNotNull(allStudent);
+        assertEquals(allStudent.size() , 10);
+        log.trace(allStudent);
 
     }
 
@@ -97,14 +107,13 @@ public class TestStudentController {
         for(long i = 0; i< 10; i++){
             Student s = new Student("name"+i,"surname"+i,new Date());
             ResponseEntity<Student> e = restTemplate.postForEntity(String.format(post,port),s,Student.class);
-            assert(e.getStatusCode() ==  HttpStatus.CREATED);
-            System.out.println(e.getStatusCode());
-
+            assertEquals(e.getStatusCode(),  HttpStatus.CREATED);
+            log.trace(e.getStatusCode());
         }
-
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
-        assert(allStudent.size() == 10);
-        System.out.println(allStudent);
+        assertNotNull(allStudent);
+        assertEquals(allStudent.size(),10);
+        log.trace(allStudent);
     }
 
     @Test
@@ -114,8 +123,9 @@ public class TestStudentController {
         restTemplate.delete(String.format(del,port));
 
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
-        assert(allStudent.size() == 9);
-        System.out.println(allStudent);
+        assertNotNull(allStudent);
+        assertEquals(allStudent.size() , 9);
+        log.trace(allStudent);
     }
     private void addStudent(){
         long id = 100L, groupIdn = 10;
@@ -132,8 +142,7 @@ public class TestStudentController {
         un.getListGroup().add(gr);
         service.saveUniversity(un);
         List<Student> l = service.findStudentByGroupId(groupIdn);
-        assert(l.size() == 10);
-
+        assertEquals(l.size() , 10);
     }
 
 

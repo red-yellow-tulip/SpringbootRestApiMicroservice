@@ -1,4 +1,5 @@
-import base.StudentMicroserviceRunner;
+package base;
+
 import base.entity.Group;
 import base.entity.Student;
 import base.entity.University;
@@ -13,16 +14,15 @@ import org.springframework.test.context.ContextConfiguration;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ContextConfiguration(classes = StudentMicroserviceRunner.class)
 @ActiveProfiles("test")
 public class TestDBService {
 
-    private static final Logger log = LogManager.getLogger();
-
-
+    private static final Logger log = LogManager.getLogger(TestDBService.class.getName());
 
     @Resource
     private ServiceDatabase service;
@@ -39,13 +39,13 @@ public class TestDBService {
 
         University un = new University(id,"Best university");
         University un2 = service.saveUniversity(un);
-        assert (un2 != null);
-        assert (un2.getId() != null);
+        assertNotNull (un2 );
+        assertNotNull (un2.getId());
         log.info(un2);
 
         un = service.findUniversityById(id);
-        assert (un != null);
-        assert (un.getId() != null);
+        assertNotNull (un);
+        assertNotNull (un.getId() );
         log.info(un);
     }
 
@@ -62,8 +62,7 @@ public class TestDBService {
         service.saveUniversity(un);
 
         List<Group> lg =  service.findListGroupByUniversityId(id);
-        assert (lg.size() == 1);
-
+        assertEquals (lg.size() , 1);
     }
 
     @Test
@@ -86,8 +85,8 @@ public class TestDBService {
         List<Student> l = service.findStudentByGroupId(groupId);
 
         log.info(l);
-        assert (l.size() == 10);
-        assert (l.get(5) != null);
+        assertEquals (l.size() ,  10);
+        assertNotNull (l.get(5) );
     }
 
     @Test
@@ -109,20 +108,16 @@ public class TestDBService {
         service.saveUniversity(un);
         List<Student> l = service.findStudentByGroupId(groupId);
 
-
         Student s0 = new Student("name11","surname11",new Date());
         Student s00 = service.addStudentByGroupId(s0,groupId);
-        assert (s00 != null);
-
+        assertNotNull (s00 );
 
         Student s001 = service.getStudentByNameAndSurname("name11","surname11");
-        assert (s001 != null);
-        assert (s001.getGroupId() != 11L);
-
+        assertNotNull (s001 );
+        assertNotEquals (s001.getGroupId() , 11L);
 
         l = service.findStudentByGroupId(groupId);
         assert (l.size() == 11);
-
 
         service.deleteStudent("name11","surname11");
         l = service.findStudentByGroupId(groupId);
@@ -135,7 +130,6 @@ public class TestDBService {
     public void createTest() {
 
         service.clearTable();
-
         long id = 100L, groupId = 1000;
         University un = new University(id, "Best university");
 
@@ -149,13 +143,8 @@ public class TestDBService {
                 s.setGroup(gr);
                 gr.getListStudents().add(s);
             }
-
             un.getListGroup().add(gr);
-
-
-
         }
         service.saveUniversity(un);
-
     }
 }

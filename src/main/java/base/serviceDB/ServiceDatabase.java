@@ -24,9 +24,7 @@ public class ServiceDatabase {
     @Resource  // таблица - university
     private UniversityRepository universityRepository;
 
-
-
-    private long universityId = 100;
+    private final long universityId = 100;
 
     @Transactional
     public University saveUniversity(University un) {
@@ -39,7 +37,6 @@ public class ServiceDatabase {
         universityRepository.deleteAll();
         groupRepository.deleteAll();
         universityRepository.deleteAll();
-
     }
     @Transactional (readOnly = true)
     public University findUniversityById(long l) {
