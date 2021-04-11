@@ -108,7 +108,7 @@ public class TestStudentController {
         }
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent);
-        assertEquals(allStudent.size(),10);
+        assertEquals(allStudent.size(),20);
         log.trace(allStudent);
     }
 
