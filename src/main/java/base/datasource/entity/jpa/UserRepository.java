@@ -1,6 +1,6 @@
-package base.serviceDB;
+package base.datasource.entity.jpa;
 
-import base.entity.University;
+import base.datasource.entity.UserDb;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface UniversityRepository extends JpaRepository<University, Long> {
+public interface UserRepository extends JpaRepository<UserDb, Long> {
 
-    Optional<University> findByUniversityId(long l);
+    Optional<UserDb> findByLogin(String userName);
+
 }

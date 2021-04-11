@@ -1,4 +1,4 @@
-package base.entity;
+package base.datasource.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
@@ -37,7 +37,6 @@ public class University implements Serializable {
     public University() {
 
     }
-
 
     public University(Long i, String university) {
         this.universityId = i;

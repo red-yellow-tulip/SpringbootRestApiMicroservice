@@ -11,11 +11,11 @@ CREATE SEQUENCE university_schemas.student_seq START 1;
 
 drop TABLE university_schemas.student;
 CREATE TABLE university_schemas.student (
-               id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_seq'::regclass),
-               student_id bigint NOT NULL,
-               name varchar(64) NOT NULL,
-               surname varchar(64) NOT NULL,
-               dateBirth date
+       id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_seq'::regclass),
+       student_id bigint NOT NULL,
+       name varchar(64) NOT NULL,
+       surname varchar(64) NOT NULL,
+       dateBirth date
 );
 
 drop index university_schemas.student_id_idx;
@@ -28,11 +28,11 @@ CREATE SEQUENCE university_schemas.student_group_seq START 1;
 
 drop TABLE university_schemas.student_group;
 CREATE TABLE university_schemas.student_group (
-                                            id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_group_seq'::regclass),
-                                            group_id bigint NOT NULL,
-                                            name varchar(64) NOT NULL,
-                                            university_id bigint NOT NULL,
-                                            dateBirth date
+        id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_group_seq'::regclass),
+        group_id bigint NOT NULL,
+        name varchar(64) NOT NULL,
+        university_id bigint NOT NULL,
+        dateBirth date
 );
 
 drop index university_schemas.student_group_id_idx;
@@ -44,15 +44,25 @@ CREATE SEQUENCE university_schemas.university_seq START 1;
 
 drop TABLE university_schemas.university;
 CREATE TABLE university_schemas.university (
-                                                  id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_group_seq'::regclass),
-                                                  university_id bigint NOT NULL,
-                                                  name varchar(64) NOT NULL
+      id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_group_seq'::regclass),
+      university_id bigint NOT NULL,
+      name varchar(64) NOT NULL
 
 );
 
-drop index university_schemas.university_id_idx;
-create unique index university_id_idx  on university_schemas.university(id);
-create unique index university_un_id_idx  on university_schemas.university(university_id);
+--user--------------------------------------------------------------------------
+drop SEQUENCE university_schemas.user_seq;
+CREATE SEQUENCE university_schemas.user_seq START 1;
+
+drop TABLE university_schemas.users;
+CREATE TABLE university_schemas.users (
+        id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.user_seq'::regclass),
+        login varchar(64) NOT NULL,
+        psw varchar(64) NOT NULL,
+        name varchar(64) NOT NULL,
+        role varchar(64) NOT NULL
+);
+
 
 
 

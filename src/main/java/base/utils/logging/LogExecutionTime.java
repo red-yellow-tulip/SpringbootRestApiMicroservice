@@ -1,4 +1,4 @@
-package base.logging;
+package base.utils.logging;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

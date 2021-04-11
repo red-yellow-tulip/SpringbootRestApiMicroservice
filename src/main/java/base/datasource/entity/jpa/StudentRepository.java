@@ -1,6 +1,6 @@
-package base.serviceDB;
+package base.datasource.entity.jpa;
 
-import base.entity.Student;
+import base.datasource.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

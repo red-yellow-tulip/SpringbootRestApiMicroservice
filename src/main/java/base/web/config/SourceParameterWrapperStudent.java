@@ -1,6 +1,6 @@
 package base.web.config;
 
-import base.entity.Student;
+import base.datasource.entity.Student;
 
 import java.util.ArrayList;
 

@@ -1,22 +1,21 @@
 package base;
-import base.entity.Group;
-import base.entity.Student;
-import base.entity.University;
-import base.serviceDB.ServiceDatabase;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
+
+import base.datasource.DatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class StudentMicroserviceRunner implements  ApplicationRunner{
 
     private static final Logger log = LoggerFactory.getLogger(StudentMicroserviceRunner.class);
     @Autowired
-    private ServiceDatabase serviceDatabase;
+    private DatabaseService databaseService;
 
     @Value("${server.port}")
     String port;
@@ -30,29 +29,8 @@ public class StudentMicroserviceRunner implements  ApplicationRunner{
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (serviceDatabase.findAllUniversity().isEmpty())
-            createDemoData();
+        if (databaseService.findAllUniversity().isEmpty())
+            databaseService.createDemoData();
         log.info(String.format("start app: %s, port: %s",name,port));
-    }
-
-    private void createDemoData() {
-
-        serviceDatabase.clearTable();
-
-        long id = 100L, groupId = 1000;
-        University un = new University(id, "Best university");
-
-        for (char i = 'A'; i < 'Z'; i++) {
-            Group gr = new Group(groupId + i, "demo_group" +i);
-            gr.setUniversity(un);
-
-            for (int j = 1; j <= 10; j++) {
-                Student s = new Student(("demo_name" + i) +j, ("demo_surname" +  i)+j, new Date());
-                s.setGroup(gr);
-                gr.getListStudents().add(s);
-            }
-            un.getListGroup().add(gr);
-        }
-        serviceDatabase.saveUniversity(un);
     }
 }

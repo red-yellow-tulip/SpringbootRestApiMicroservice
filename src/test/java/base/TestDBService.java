@@ -1,9 +1,9 @@
 package base;
 
-import base.entity.Group;
-import base.entity.Student;
-import base.entity.University;
-import base.serviceDB.ServiceDatabase;
+import base.datasource.entity.Group;
+import base.datasource.entity.Student;
+import base.datasource.entity.University;
+import base.datasource.DatabaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ public class TestDBService {
     private static final Logger log = LogManager.getLogger(TestDBService.class.getName());
 
     @Resource
-    private ServiceDatabase service;
+    private DatabaseService service;
     @BeforeEach
     public void testBefore() {
         assertNotNull(service);

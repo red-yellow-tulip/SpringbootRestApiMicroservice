@@ -1,35 +1,34 @@
 package base.web;
 
-import base.entity.Group;
-import base.logging.LogExecutionTime;
+import base.datasource.entity.Group;
+import base.utils.logging.LogExecutionTime;
+import base.web.config.HandlerExceptionNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import base.serviceDB.ServiceDatabase;
+import base.datasource.DatabaseService;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/group")
-public class GroupController {
-
-    @Autowired
-    private ServiceDatabase serviceDatabase;
+public class GroupController extends  BaseController{
 
     // RequestMethod.GET
     // http://localhost:8080/group/all
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    @ExceptionHandler(value = base.web.HandlerExceptionNotFound.class)
+    @ExceptionHandler(value = HandlerExceptionNotFound.class)
     @LogExecutionTime
     public ResponseEntity<List<Group>> getAllProduct() {
 
-        List<Group> listGroup = serviceDatabase.findAllGroup();
+        List<Group> listGroup = databaseService.findAllGroup();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listGroup);
     }
 
@@ -41,7 +40,7 @@ public class GroupController {
     @LogExecutionTime
     public ResponseEntity<List<Group>> getFilterProduct(@RequestParam(value="name", required=false, defaultValue="")  String groupName) {
 
-        List<Group> listGroup  = serviceDatabase.findAllGroupByName(groupName);
+        List<Group> listGroup  = databaseService.findAllGroupByName(groupName);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listGroup);
     }
 
@@ -54,7 +53,7 @@ public class GroupController {
     @LogExecutionTime
     public ResponseEntity<Group> getFilterProduct(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
-        Group g  = serviceDatabase.findGroupById(groupId);
+        Group g  = databaseService.findGroupById(groupId);
         if (g == null) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(null);
         }
@@ -74,10 +73,10 @@ public class GroupController {
         if (gr == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        if (serviceDatabase.isExistsGroupById(gr.getGroupId()))
+        if (databaseService.isExistsGroupById(gr.getGroupId()))
             return new ResponseEntity<>(HttpStatus.CONFLICT);
 
-        Group temp = serviceDatabase.addNewGroup(gr);
+        Group temp = databaseService.addNewGroup(gr);
 
         if (temp != null)
             return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.CREATED);
@@ -95,17 +94,13 @@ public class GroupController {
     @LogExecutionTime
     public ResponseEntity<Group> deleteProduct(       @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
-        if (!serviceDatabase.isExistsGroupById(groupId))
+        if (!databaseService.isExistsGroupById(groupId))
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
-        if ( 0 != serviceDatabase.getCountStudentByGroupId(groupId))
+        if ( 0 != databaseService.getCountStudentByGroupId(groupId))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        serviceDatabase.deleteGroup(groupId);
+        databaseService.deleteGroup(groupId);
         return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
     }
-
-
-
-
 }

@@ -1,6 +1,6 @@
-package base.serviceDB;
+package base.datasource.entity.jpa;
 
-import base.entity.Group;
+import base.datasource.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

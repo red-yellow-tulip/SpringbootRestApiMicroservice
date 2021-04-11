@@ -1,19 +1,29 @@
-package base.serviceDB;
+package base.datasource;
 
-import base.entity.Group;
-import base.entity.Student;
-import base.entity.University;
+import base.datasource.entity.Group;
+import base.datasource.entity.Student;
+import base.datasource.entity.University;
+import base.datasource.entity.UserDb;
+import base.datasource.entity.jpa.GroupRepository;
+import base.datasource.entity.jpa.StudentRepository;
+import base.datasource.entity.jpa.UniversityRepository;
+import base.datasource.entity.jpa.UserRepository;
+import base.utils.security.CustomUserDetailsService;
+import base.web.config.SourceParameterWrapperStudent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
-public class ServiceDatabase {
+public class DatabaseService {
 
     @Resource  // таблица - student
     private StudentRepository studentRepository;
@@ -23,6 +33,12 @@ public class ServiceDatabase {
 
     @Resource  // таблица - university
     private UniversityRepository universityRepository;
+
+    @Resource  // таблица - user
+    private UserRepository userRepository;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     private final long universityId = 100;
 
@@ -37,6 +53,7 @@ public class ServiceDatabase {
         universityRepository.deleteAll();
         groupRepository.deleteAll();
         universityRepository.deleteAll();
+        userRepository.deleteAll();
     }
     @Transactional (readOnly = true)
     public University findUniversityById(long l) {
@@ -122,14 +139,11 @@ public class ServiceDatabase {
         }
         groupRepository.save(g);
         studentRepository.delete(s);
-
     }
 
     @Transactional (readOnly = true)
     public  List<Group>  findAllGroup() {
-        List<Group>  l = new ArrayList<>(groupRepository.findAll());
-
-        return l;
+        return new ArrayList<>(groupRepository.findAll());
     }
 
     @Transactional (readOnly = true)
@@ -157,7 +171,6 @@ public class ServiceDatabase {
 
         Optional<Group> n = groupRepository.findByGroupName(gr.getGroupName());
         return n.orElse(null);
-
     }
 
     @Transactional
@@ -167,10 +180,8 @@ public class ServiceDatabase {
 
         if (un.getListGroup().contains(g))
             un.getListGroup().remove(g);
-
         universityRepository.save(un);
         groupRepository.delete(g);
-
     }
 
     @Transactional (readOnly = true)
@@ -221,4 +232,44 @@ public class ServiceDatabase {
     public List<University> findAllUniversity() {
         return universityRepository.findAll();
     }
+
+    @Transactional
+    public UserDb AddUsers(UserDb u){
+        u.setPassword(customUserDetailsService.encode(u.getPassword()));
+        return userRepository.save(u);
+    }
+
+    @Transactional (readOnly = true)
+    public UserDb findUserByLogin(String userName) {
+        return userRepository.findByLogin(userName).get();
+    }
+
+
+    public void createDemoData() {
+
+        clearTable();
+
+        AddUsers(new UserDb("USER1","pswd","USER", "userName"));
+        AddUsers(new UserDb("USER2","pswd","USER","userName"));
+        AddUsers(new UserDb("ADMIN","pswd","ADMIN","userName"));
+
+        long id = 100L, groupIdn = 10;
+        University un = new University(id, "Best university");
+
+        for (long j = 0; j < 5; j++) {
+            Group gr = new Group(groupIdn + j, "group" + j);
+            gr.setUniversity(un);
+            gr.setGroupId(50 + j);
+
+            for (long i = j * 10; i < j * 10 + 10; i++) {
+                Student s = new Student("name" + i, "surname" + i, new Date());
+                s.setGroup(gr);
+                gr.getListStudents().add(s);
+            }
+            un.getListGroup().add(gr);
+        }
+        saveUniversity(un);
+    }
+
+
 }

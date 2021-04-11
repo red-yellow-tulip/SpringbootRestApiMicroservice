@@ -1,4 +1,4 @@
-package base.web;
+package base.web.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

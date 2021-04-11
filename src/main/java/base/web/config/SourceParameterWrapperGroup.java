@@ -1,6 +1,6 @@
 package base.web.config;
 
-import base.entity.Group;
+import base.datasource.entity.Group;
 
 import java.util.ArrayList;
 
