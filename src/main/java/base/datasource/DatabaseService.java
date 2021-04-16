@@ -13,6 +13,7 @@ import base.web.config.SourceParameterWrapperStudent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -42,13 +43,13 @@ public class DatabaseService {
 
     private final long universityId = 100;
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public University saveUniversity(University un) {
         return universityRepository.save(un);
     }
 
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public void clearTable() {
         universityRepository.deleteAll();
         groupRepository.deleteAll();
@@ -72,7 +73,7 @@ public class DatabaseService {
         Group g0 = g.orElse(null);
         return g0 == null ? new ArrayList<>(): new ArrayList<>(g0.getListStudents());
     }
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public Student addStudentByGroupId(Student s, long groupId) {
         Group g = groupRepository.findByGroupId(groupId).orElse(null);
         s.setGroupId(g.getGroupId());
@@ -128,7 +129,7 @@ public class DatabaseService {
         return gr.isPresent();
     }
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public void deleteStudent(String name, String sname) {
 
         Student s = studentRepository.findByNameAndSurname(name,sname).get();
@@ -157,7 +158,7 @@ public class DatabaseService {
         return g.orElse(null);
     }
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public Group addNewGroup(Group gr) {
 
         if (universityRepository.findAll().size() == 0){
@@ -173,7 +174,7 @@ public class DatabaseService {
         return n.orElse(null);
     }
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public void deleteGroup(long groupId) {
         Group g = groupRepository.findByGroupId(groupId).get();
         University un = universityRepository.findByUniversityId(universityId).get();
@@ -196,7 +197,7 @@ public class DatabaseService {
     }
 
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public Student updateStudentId(long studentId, Student newStudent) {
 
         Student sOld = studentRepository.findById(studentId).get();
@@ -221,21 +222,22 @@ public class DatabaseService {
         return studentRepository.findById(studentId).get();
     }
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     void createRandomUniversity() {
 
         University un = new University(universityId,"Bestuniversity_random");
         universityRepository.save(un);
     }
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public List<University> findAllUniversity() {
         return universityRepository.findAll();
     }
 
-    @Transactional
+    @Transactional (propagation = Propagation.REQUIRED )
     public UserDb AddUsers(UserDb u){
         u.setPassword(customUserDetailsService.encode(u.getPassword()));
+        //u.setPassword(u.getPassword());
         return userRepository.save(u);
     }
 
@@ -270,6 +272,4 @@ public class DatabaseService {
         }
         saveUniversity(un);
     }
-
-
 }

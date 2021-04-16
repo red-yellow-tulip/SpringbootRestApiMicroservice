@@ -2,45 +2,20 @@ package rest;
 
 import base.StudentMicroserviceRunner;
 import base.datasource.entity.Group;
-import base.datasource.entity.Student;
-import base.datasource.entity.University;
-import base.datasource.DatabaseService;
 import base.web.config.SourceParameterWrapperGroup;
-import base.web.config.SourceParameterWrapperStudent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest (classes = StudentMicroserviceRunner.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class TestGroupController {
-
-    private static final Logger log = LogManager.getLogger(TestGroupController.class.getName());
-
-    //@Value("${server.port}")
-    @LocalServerPort
-    String port;
-
-    TestRestTemplate restTemplate = new TestRestTemplate("ADMIN","pswd");
-    @Resource
-    private DatabaseService service;
-
-    @Autowired
-    private  StudentMicroserviceRunner studentMicroserviceRunner;
+public class TestGroupController  extends BaseTestHelper{
 
     private final String url =      "http://localhost:%s/";
     private final String getAll = url + "group/all";
@@ -60,7 +35,11 @@ public class TestGroupController {
     @Test
     public void TestGetAll() {
 
+        long start = System.currentTimeMillis();
         List<Group> allGroup = restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperGroup.ListWrapper.class);
+        long executionTime = System.currentTimeMillis() - start;
+        log.warn("getAll выполнен за " + executionTime + "мс" );
+
         assertEquals (allGroup.size() , 5);
         log.trace(allGroup);
     }
@@ -68,7 +47,11 @@ public class TestGroupController {
     @Test
     public void TestFiltr() {
 
+        long start = System.currentTimeMillis();
         List<Group> allGroup = restTemplate.getForObject(String.format(filtr,port), SourceParameterWrapperGroup.ListWrapper.class);
+        long executionTime = System.currentTimeMillis() - start;
+        log.warn("filtr выполнен за " + executionTime + "мс" );
+
         assertEquals (allGroup.size() , 1);
         log.trace(allGroup);
 
@@ -80,7 +63,11 @@ public class TestGroupController {
     @Test
     public void TestGroupId() {
 
+        long start = System.currentTimeMillis();
         Group group1 = restTemplate.getForObject(String.format(groupId,port), Group.class);
+        long executionTime = System.currentTimeMillis() - start;
+        log.warn("groupId выполнен за " + executionTime + "мс" );
+
         assertNotNull(group1);
         log.trace(group1);
     }
@@ -91,7 +78,10 @@ public class TestGroupController {
         long id = 100L, groupIdn = 55;
 
         Group gr = new Group(groupIdn, "group55");
+        long start = System.currentTimeMillis();
         ResponseEntity<Group> e = restTemplate.postForEntity(String.format(post,port), gr, Group.class);
+        long executionTime = System.currentTimeMillis() - start;
+        log.warn("post выполнен за " + executionTime + "мс" );
         assertNotEquals(e.getStatusCode() , HttpStatus.FORBIDDEN);
         assertEquals(e.getStatusCode() , HttpStatus.CREATED);
         log.trace(e.getStatusCode());
@@ -106,7 +96,10 @@ public class TestGroupController {
 
         long id = 100L, groupIdn = 55;
         Group gr = new Group(groupIdn, "group55");
+        long start = System.currentTimeMillis();
         ResponseEntity<Group> e = restTemplate.postForEntity(String.format(post,port), gr, Group.class);
+        long executionTime = System.currentTimeMillis() - start;
+        log.warn("post выполнен за " + executionTime + "мс" );
         assertEquals (e.getStatusCode() , HttpStatus.CREATED);
         log.trace(e.getStatusCode());
         restTemplate.delete(String.format(del,port));

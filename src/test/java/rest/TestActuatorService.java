@@ -1,37 +1,21 @@
 package rest;
 
-import base.StudentMicroserviceRunner;
-import base.datasource.DatabaseService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.annotation.Resource;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(classes = StudentMicroserviceRunner.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
 @ActiveProfiles("test")
-public class TestActuatorService {
-
-    @LocalServerPort
-    String port;
-
-    TestRestTemplate restTemplate = new TestRestTemplate("ADMIN", "pswd");
-    @Resource
-    private DatabaseService service;
+public class TestActuatorService extends BaseTestHelper {
 
     private final String endpoint = "http://localhost:%s/actuator/";
     private final String health = endpoint + "health";
@@ -39,7 +23,6 @@ public class TestActuatorService {
     private final String customServiceActuator = endpoint + "health/customServiceActuator"; // реализация своего индиктора
     private final String beans = endpoint + "beans";
     private final String env = endpoint + "env";
-
 
     @BeforeEach
     public void testBefore() {

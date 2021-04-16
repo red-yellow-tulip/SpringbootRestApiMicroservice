@@ -1,44 +1,23 @@
 package rest;
 
-import base.StudentMicroserviceRunner;
 import base.datasource.entity.Group;
 import base.datasource.entity.Student;
 import base.datasource.entity.University;
-import base.datasource.DatabaseService;
 import base.web.config.SourceParameterWrapperStudent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest (classes = StudentMicroserviceRunner.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class TestStudentController {
-
-    private static final Logger log = LogManager.getLogger(TestStudentController.class.getName());
-
-    @Resource
-    private DatabaseService service;
-
-    //@Value("${server.port}")
-    @LocalServerPort
-    String port;
-
-    private TestRestTemplate restTemplate = new TestRestTemplate("USER1","pswd");
+public class TestStudentController extends BaseTestHelper{
 
     private final String url =      "http://localhost:%s/";
     private final String getAll =   url+"student/all";

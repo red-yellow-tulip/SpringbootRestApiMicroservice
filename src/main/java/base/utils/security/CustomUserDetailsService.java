@@ -5,7 +5,9 @@ import base.datasource.entity.UserDb;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Configuration
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -20,8 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private DatabaseService databaseService;
+
     @Autowired
     private BCryptPasswordEncoder encoder;
+
+    final int length = 8;
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
@@ -32,7 +38,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             log.warn("Unknown user: "+userName);
             throw new UsernameNotFoundException("Unknown user: "+userName);
         }
-        log.warn("read details for user: "+userName);
 
         UserDetails user = User.builder()
                 .username(connectUser.getLogin())
@@ -40,16 +45,22 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .password(connectUser.getPassword())
                 .roles(connectUser.getRole())
                 .build();
-        return user;
 
+        return user;
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(16);
+        return new BCryptPasswordEncoder(length);
     }
 
     public String encode(String password) {
-        return encoder.encode(password);
+        long start = System.currentTimeMillis();
+
+        String res = encoder.encode(password);
+
+        long executionTime = System.currentTimeMillis() - start;
+        log.warn("encode: выполнен за " + executionTime + "мс" );
+        return res;
     }
 }
