@@ -1,0 +1,14 @@
+
+1) cd ../src/main/resources/migration
+1.1) положить драйвер postgres
+1.2) положить liquibase.properties
+1.3) поправить имя файла  - драйвер postgres
+
+2) liquibase generateChangeLog
+- будет сформирован json со структурой БД
+
+3) переложить сформированный файл в директор ..\src\main\resources\db\changelog
+
+4) предварительно создать БД/пользователя/схему/выдать гранты
+
+5) запускать проект

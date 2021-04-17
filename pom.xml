@@ -92,7 +92,6 @@
             <version>42.2.5</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -121,14 +120,14 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -179,12 +178,16 @@
                     <spring.datasource.username>university</spring.datasource.username>
                     <spring.datasource.password>university</spring.datasource.password>
                     <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
-                    <spring.jpa.generate-ddl>true</spring.jpa.generate-ddl>
-                    <spring.jpa.hibernate.ddl-auto>update</spring.jpa.hibernate.ddl-auto>
+                    <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+                    <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
                     <server.port>8095</server.port>
-                    <spring.application.name>name</spring.application.name>
+                    <spring.application.name>studentMicroservice</spring.application.name>
                     <logging.file.path>/logs</logging.file.path>
                     <logging.level.root>INFO</logging.level.root>
+
+                    <spring.liquibase.enabled>true</spring.liquibase.enabled>
+                    <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+                    <spring.liquibase.contexts>dev</spring.liquibase.contexts>
                 </properties>
         </profile>
 
@@ -199,12 +202,16 @@
                     <spring.datasource.username>university</spring.datasource.username>
                     <spring.datasource.password>university</spring.datasource.password>
                     <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
-                    <spring.jpa.generate-ddl>true</spring.jpa.generate-ddl>
-                    <spring.jpa.hibernate.ddl-auto>update</spring.jpa.hibernate.ddl-auto>
+                    <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+                    <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
                     <server.port>11095</server.port>
-                    <spring.application.name>name</spring.application.name>
+                    <spring.application.name>testController</spring.application.name>
                     <logging.file.path>/logs</logging.file.path>
                     <logging.level.root>INFO</logging.level.root>
+
+                    <spring.liquibase.enabled>true</spring.liquibase.enabled>
+                    <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+                    <spring.liquibase.contexts>test</spring.liquibase.contexts>
                 </properties>
         </profile>
     </profiles>

@@ -33,7 +33,7 @@ public class Student implements Serializable {
 
     @Getter @Setter
     @Temporal(TemporalType.DATE)
-    @Column (name = "dateBirth")
+    @Column (name = "datebirth")
     private Date dateBirth;
 
     @Getter @Setter

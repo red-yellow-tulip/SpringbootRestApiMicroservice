@@ -1,0 +1,5 @@
+databaseChangeLog:
+    - include:
+        file: db/changelog/base/1.0_create_schema.sql
+    - includeAll:
+        path: db/changelog/changes/
