@@ -51,7 +51,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(length);
+        return new BCryptPasswordEncoder(length);  // 16 - нельзя, сборка + тесты 5 минут
     }
 
     public String encode(String password) {
