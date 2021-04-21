@@ -1,15 +1,19 @@
 package base.web;
 
 import base.datasource.entity.Student;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import base.datasource.DatabaseService;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -24,12 +28,13 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<List<Student>> getAllProduct() {
+    /*@Operation(summary = "Gets all student", tags = "student")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Found the student",
+                            content = {@Content(mediaType = "application/json",
+                                       array = @ArraySchema(schema = @Schema(implementation = Student.class)))    })  })*/
+    public ResponseEntity<List<Student>> getAllStudent() {
 
         List<Student> listStudent = new ArrayList<>(databaseService.findAllStudent());
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        //ResponseEntity<List<Student>> resp = new ResponseEntity<>(listStudent,headers, HttpStatus.OK);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listStudent);
     }
 
@@ -38,7 +43,7 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "/filtr", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<List<Student>> getFilterProduct(@RequestParam(value="name", required=false, defaultValue="")  String name,
+    public ResponseEntity<List<Student>> getFilterStudent(@RequestParam(value="name", required=false, defaultValue="")  String name,
                                                           @RequestParam(value="sname", required=false, defaultValue="")  String sname) {
 
         List<Student> listStudent  = databaseService.findAllStudentByNameLikeOrSurnameLike(name,sname);
@@ -50,7 +55,7 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> getProductById(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
+    public ResponseEntity<Student> getStudentById(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
 
         if (!databaseService.isExistsStudent(groupId))
@@ -65,7 +70,7 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "/group", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<List<Student>> getFilterProduct(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
+    public ResponseEntity<List<Student>> getFilterStudent(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         List<Student> listStudent  = databaseService.findStudentByGroupId(groupId);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listStudent);
@@ -76,7 +81,7 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> saveProduct(@RequestBody @Valid Student student,
+    public ResponseEntity<Student> saveStudent(@RequestBody @Valid Student student,
                                                @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         if (!databaseService.isExistsGroupById(groupId))
@@ -98,7 +103,7 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> updateProduct(@RequestBody @Valid Student student,
+    public ResponseEntity<Student> updateStudent(@RequestBody @Valid Student student,
                                                  @RequestParam(value="id", required=false, defaultValue="")  long studentIt) {
 
         if (student == null)
@@ -127,7 +132,7 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "delete", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> deleteProduct(       @RequestParam(value="name", required=false, defaultValue="")  String name,
+    public ResponseEntity<Student> deleteStudent(       @RequestParam(value="name", required=false, defaultValue="")  String name,
                                                         @RequestParam(value="sname", required=false, defaultValue="") String sname)  {
 
         if (!databaseService.isExistsStudent(name,sname))

@@ -12,6 +12,7 @@
 * добавлена авторизация на основе SpringSecurity (BCryptPasswordEncoder + DB storage account)
 * добавлен SpringActuator + test для endPoint (health,info,beans,env), реализованна собственная метрика /health/customServiceActuator
 * добавлено версионирование схемы БД (Liquibase)
+* добавлено документирование API springfox+swagger-ui: http://localhost:11095/swagger-ui/index.html#/
 
 Данный проект разработан с целью сравнения подходов к конфигурированию крассического Spring и Spring-Boot. 
 Проект для сравнения подходов: https://github.com/red-yellow-tulip/Spring-JPA-RestApi_microservice
