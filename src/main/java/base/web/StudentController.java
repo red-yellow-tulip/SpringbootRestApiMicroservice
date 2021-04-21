@@ -28,10 +28,6 @@ public class StudentController  extends  BaseController{
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    /*@Operation(summary = "Gets all student", tags = "student")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Found the student",
-                            content = {@Content(mediaType = "application/json",
-                                       array = @ArraySchema(schema = @Schema(implementation = Student.class)))    })  })*/
     public ResponseEntity<List<Student>> getAllStudent() {
 
         List<Student> listStudent = new ArrayList<>(databaseService.findAllStudent());

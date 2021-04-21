@@ -20,7 +20,8 @@ public class Swagger2SpringBoot {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 //.paths(PathSelectors.any())
-                .paths(PathSelectors.regex("/student*").or(PathSelectors.regex("/group*")))
+                .paths(PathSelectors.regex("/student.*")
+                        .or(PathSelectors.regex("/group.*")))
                 .build();
     }
 }
