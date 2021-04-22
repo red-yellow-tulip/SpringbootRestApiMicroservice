@@ -16,7 +16,10 @@ public class University implements Serializable {
 
     @Getter @Setter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="university_seq", sequenceName="university_schemas.university_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "university_seq")
+
     @Column(name = "id")
     private Long id;
 

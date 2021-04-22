@@ -18,7 +18,10 @@ public class Group implements Serializable {
 
     @Getter @Setter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="student_group_seq", sequenceName="university_schemas.student_group_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_group_seq")
+
     @Column(name = "id")
     private Long id;
 

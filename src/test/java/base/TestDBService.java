@@ -26,6 +26,7 @@ public class TestDBService {
 
     @Resource
     private DatabaseService service;
+
     @BeforeEach
     public void testBefore() {
         assertNotNull(service);

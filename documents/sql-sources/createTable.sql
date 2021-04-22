@@ -24,9 +24,8 @@ create unique index student_group_id_idx  on university_schemas.student_group(id
 
 --university--------------------------------------------------------------------------
 CREATE SEQUENCE university_schemas.university_seq START 1;
-
 CREATE TABLE university_schemas.university (
-      id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.student_group_seq'::regclass),
+      id bigint NOT NULL PRIMARY KEY DEFAULT nextval('university_schemas.university_seq'::regclass),
       university_id bigint NOT NULL,
       name varchar(64) NOT NULL
 );
