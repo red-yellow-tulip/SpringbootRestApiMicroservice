@@ -137,6 +137,13 @@
             <version>3.0.0</version>
         </dependency>
 
+        <!--h2database-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -205,7 +212,7 @@
         </profile>
 
         <profile>
-            <id>test</id>
+            <id>test.postgres</id>
                 <activation>
                     <activeByDefault>true</activeByDefault>
                 </activation>
@@ -227,8 +234,29 @@
                     <spring.liquibase.contexts>test</spring.liquibase.contexts>
                 </properties>
         </profile>
+
+        <profile>
+            <id>test.h2</id>
+            <properties>
+                <spring.datasource.driverClassName>org.h2.Driver</spring.datasource.driverClassName>
+                <spring.datasource.url>jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=true;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS university_schemas</spring.datasource.url>
+                <spring.jpa.database-platform>org.hibernate.dialect.H2Dialect</spring.jpa.database-platform>
+                <spring.datasource.username>university</spring.datasource.username>
+                <spring.datasource.password>university</spring.datasource.password>
+                <server.port>11095</server.port>
+                <spring.application.name>testController</spring.application.name>
+                <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+                <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
+
+                <logging.file.path>/logs</logging.file.path>
+                <logging.level.root>INFO</logging.level.root>
+
+                <spring.liquibase.enabled>true</spring.liquibase.enabled>
+                <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+                <spring.liquibase.contexts>test</spring.liquibase.contexts>
+            </properties>
+        </profile>
+
     </profiles>
-
-
 
 </project>

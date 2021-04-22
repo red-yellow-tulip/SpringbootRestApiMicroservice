@@ -3,9 +3,9 @@ package rest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,19 +27,15 @@ public class TestActuatorService extends BaseTestHelper {
     @BeforeEach
     public void testBefore() {
         assertNotNull(service);
+        service.clearTable();
         service.createDemoData();
     }
 
-    @AfterEach
-    public void testAfter() {
-        assertNotNull(service);
-        service.clearTable();
-    }
 
     @Test
     public void TestHealth() throws JSONException {
 
-        ResponseEntity<String> healthResult = restTemplate.getForEntity(String.format(health, port), String.class);
+        ResponseEntity<String> healthResult = restTemplateIncognito.getForEntity(String.format(health, port), String.class);
         assertNotNull(healthResult);
 
           /*  {
@@ -75,7 +71,7 @@ public class TestActuatorService extends BaseTestHelper {
     @Test
     public void TestInfo() throws JSONException {
 
-        ResponseEntity<String> infoResult = restTemplate.getForEntity(String.format(info, port), String.class);
+        ResponseEntity<String> infoResult = restTemplateIncognito.getForEntity(String.format(info, port), String.class);
         assertNotNull(infoResult);
 
           /*  {
@@ -104,7 +100,7 @@ public class TestActuatorService extends BaseTestHelper {
     @Test
     public void TestCustomServiceActuator() throws JSONException {
 
-        ResponseEntity<String> customServiceIndicatorResult = restTemplate.getForEntity(String.format(customServiceActuator, port), String.class);
+        ResponseEntity<String> customServiceIndicatorResult = restTemplateIncognito.getForEntity(String.format(customServiceActuator, port), String.class);
         assertNotNull(customServiceIndicatorResult);
         /*
          {
@@ -123,7 +119,7 @@ public class TestActuatorService extends BaseTestHelper {
     @Test
     public void TestBean() {
 
-        ResponseEntity<String> beansResult = restTemplate.getForEntity(String.format(beans, port), String.class);
+        ResponseEntity<String> beansResult = restTemplateIncognito.getForEntity(String.format(beans, port), String.class);
         assertNotNull(beansResult); // перечисление всех бинов
         assertEquals(beansResult.getStatusCode(), HttpStatus.OK);
     }
@@ -131,7 +127,7 @@ public class TestActuatorService extends BaseTestHelper {
     @Test
     public void TestEnv() {
 
-        ResponseEntity<String> envResult = restTemplate.getForEntity(String.format(env, port), String.class);
+        ResponseEntity<String> envResult = restTemplateIncognito.getForEntity(String.format(env, port), String.class);
         assertNotNull(envResult);
         assertEquals(envResult.getStatusCode(), HttpStatus.OK);
     }

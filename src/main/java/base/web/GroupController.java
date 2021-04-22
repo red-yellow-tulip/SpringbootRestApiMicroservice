@@ -65,7 +65,7 @@ public class GroupController extends  BaseController{
     // RequestMethod.POST
     // http://localhost:8080/group/add  + object
     @ApiOperation(value = "Добавление new group ", notes = "method: GroupController.saveGroup")
-    @RequestMapping(value = "add", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"Group"})
+    @RequestMapping(value = "add", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
     @LogExecutionTime

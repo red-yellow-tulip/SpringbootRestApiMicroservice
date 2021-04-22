@@ -72,7 +72,7 @@ public class StudentController  extends  BaseController{
     // RequestMethod.POST
     // http://localhost:8080/student?id=11   + object
     @ApiOperation(value = "Добавить new student", notes = "method: StudentController.saveStudent")
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"student","id"})
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
     public ResponseEntity<Student> saveStudent(@ApiParam (value = "student object") @RequestBody @Valid Student student,

@@ -20,6 +20,8 @@ public class BaseTestHelper {
     String port;
 
     protected TestRestTemplate restTemplate = new TestRestTemplate("ADMIN", "pswd");
+
+    protected TestRestTemplate restTemplateIncognito = new TestRestTemplate();
     @Resource
     protected DatabaseService service;
 
