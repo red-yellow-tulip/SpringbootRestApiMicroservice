@@ -1,19 +1,13 @@
 package base.web;
 
 import base.datasource.entity.Student;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -25,6 +19,7 @@ public class StudentController  extends  BaseController{
 
     // RequestMethod.GET
     // http://localhost:8080/student/all
+    @ApiOperation(value = "Поиск всех student", notes = "method: StudentController.getAllStudent")
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
@@ -34,13 +29,14 @@ public class StudentController  extends  BaseController{
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listStudent);
     }
 
+    @ApiOperation(value = "Поиск всех student с фильтрацией по имени и фамилии", notes = "method: StudentController.getFilterStudent" )
     // RequestMethod.GET
     // http://localhost:8080/student/filtr?name=name1&sname=surname1
-    @RequestMapping(value = "/filtr", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @RequestMapping(value = "/filtr", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"name","sname"})
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<List<Student>> getFilterStudent(@RequestParam(value="name", required=false, defaultValue="")  String name,
-                                                          @RequestParam(value="sname", required=false, defaultValue="")  String sname) {
+    public ResponseEntity<List<Student>> getFilterStudent( @ApiParam (value = "имя")     @RequestParam(value="name", required=false, defaultValue="")  String name,
+                                                           @ApiParam (value = "фамилия") @RequestParam(value="sname", required=false, defaultValue="")  String sname) {
 
         List<Student> listStudent  = databaseService.findAllStudentByNameLikeOrSurnameLike(name,sname);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listStudent);
@@ -48,11 +44,11 @@ public class StudentController  extends  BaseController{
 
     // RequestMethod.GET
     // http://localhost:8080/student?id=1000
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ApiOperation(value = "Поиск student по id", notes = "method: StudentController.getStudentById")
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"id"})
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> getStudentById(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
-
+        public ResponseEntity<Student> getStudentById(@ApiParam (value = "id student")   @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         if (!databaseService.isExistsStudent(groupId))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -63,10 +59,11 @@ public class StudentController  extends  BaseController{
 
     // RequestMethod.GET
     // http://localhost:8080/student/group?id=10
-    @RequestMapping(value = "/group", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ApiOperation(value = "Поиск student по group id", notes = "method: StudentController.getFilterStudent")
+    @RequestMapping(value = "/group", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"id"})
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<List<Student>> getFilterStudent(@RequestParam(value="id", required=false, defaultValue="")  long groupId) {
+    public ResponseEntity<List<Student>> getFilterStudent(@ApiParam (value = "id student") @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         List<Student> listStudent  = databaseService.findStudentByGroupId(groupId);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listStudent);
@@ -74,11 +71,12 @@ public class StudentController  extends  BaseController{
 
     // RequestMethod.POST
     // http://localhost:8080/student?id=11   + object
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ApiOperation(value = "Добавить new student", notes = "method: StudentController.saveStudent")
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"student","id"})
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> saveStudent(@RequestBody @Valid Student student,
-                                               @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
+    public ResponseEntity<Student> saveStudent(@ApiParam (value = "student object") @RequestBody @Valid Student student,
+                                               @ApiParam (value = "id student")  @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
         if (!databaseService.isExistsGroupById(groupId))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -96,11 +94,12 @@ public class StudentController  extends  BaseController{
 
     // RequestMethod.PUT
     // http://localhost:8080/student?id=11   + object
-    @RequestMapping(value = "", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ApiOperation(value = "Обновить состояние  student", notes = "method: StudentController.updateStudent")
+    @RequestMapping(value = "", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, params = {"student","id"})
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> updateStudent(@RequestBody @Valid Student student,
-                                                 @RequestParam(value="id", required=false, defaultValue="")  long studentIt) {
+    public ResponseEntity<Student> updateStudent(@ApiParam (value = "student object") @RequestBody @Valid Student student,
+                                                 @ApiParam (value = "id student")  @RequestParam(value="id", required=false, defaultValue="")  long studentIt) {
 
         if (student == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -125,11 +124,12 @@ public class StudentController  extends  BaseController{
 
     // RequestMethod.DELETE
     // http://localhost:8080/student/delete?name=name1&sname=surname1
-    @RequestMapping(value = "delete", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ApiOperation(value = "Удалить запись о student", notes = "method: StudentController.deleteStudent")
+    @RequestMapping(value = "delete", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, params = {"name","sname"})
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Student> deleteStudent(       @RequestParam(value="name", required=false, defaultValue="")  String name,
-                                                        @RequestParam(value="sname", required=false, defaultValue="") String sname)  {
+    public ResponseEntity<Student> deleteStudent( @ApiParam (value = "имя") @RequestParam(value="name", required=false, defaultValue="")  String name,
+                                                  @ApiParam (value = "фамилия")  @RequestParam(value="sname", required=false, defaultValue="") String sname)  {
 
         if (!databaseService.isExistsStudent(name,sname))
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
