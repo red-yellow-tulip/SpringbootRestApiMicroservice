@@ -107,9 +107,8 @@ public class TestDBService extends BaseTestHelper {
         Student s0 = new Student("name11","surname11",new Date());
         assertTrue(service.addStudentToGroupByGroupId(s0,groupId));
 
-        Optional<Student> op = service.findStudentByNameSurName("name11","surname11");
-        assertTrue (op.isPresent());
-        assertNotEquals (op.get().getGroupId() , 11L);
+        Student op = service.findStudentByNameSurName("name11","surname11").get();
+        assertNotEquals (op.getGroupId() , 11L);
 
         l = service.findStudentByGroupId(groupId);
         assert (l.size() == 11);

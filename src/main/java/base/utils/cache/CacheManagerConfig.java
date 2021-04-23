@@ -5,6 +5,7 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -18,6 +19,7 @@ public class CacheManagerConfig {
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("cacheCaffeine");
         cacheManager.setCaffeine(caffeineCacheBuilder());
+        cacheManager.setCacheNames(Arrays.asList("Student","RemoveUser"));
         return cacheManager;
     }
 

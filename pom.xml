@@ -11,8 +11,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <packaging>jar</packaging>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>1.18.20</version>
         </dependency>
 
         <dependency>
@@ -249,7 +249,7 @@
                     <server.port>11095</server.port>
                     <spring.application.name>testController</spring.application.name>
                     <logging.file.path>/logs</logging.file.path>
-                    <logging.level.root>INFO</logging.level.root>
+                    <logging.level.root>warn</logging.level.root>
 
                     <spring.liquibase.enabled>true</spring.liquibase.enabled>
                     <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
@@ -271,7 +271,7 @@
                 <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
 
                 <logging.file.path>/logs</logging.file.path>
-                <logging.level.root>info</logging.level.root>
+                <logging.level.root>warn</logging.level.root>
 
                 <spring.liquibase.enabled>true</spring.liquibase.enabled>
                 <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>

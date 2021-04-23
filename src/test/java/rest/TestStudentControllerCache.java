@@ -1,17 +1,12 @@
 package rest;
 
-import base.datasource.entity.Group;
 import base.datasource.entity.Student;
-import base.datasource.entity.University;
 import base.web.config.SourceParameterWrapperStudent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import rest.helper.BaseTestHelper;
 
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -23,14 +18,9 @@ public class TestStudentControllerCache extends BaseTestHelper {
 
     private final String url =      "http://localhost:%s/";
     private final String getAll =   url+"student/all";
-    private final String filtr =    url+"student/filtr?name=nam&sname=surnam";
-    private final String filtr1 =   url+"student/filtr?name=name51&sname=surname51";
-    private final String groupId =  url+"student/group?id=54";
-    private final String post =     url+"student?id=54";
-    private final String del =      url+"student/delete?name=name40&sname=surname40";
 
     private final int countGroup = 10;
-    private final int countStudent = 10;
+    private final int countStudent = 100;
 
     @BeforeEach
     public void testBefore() {
