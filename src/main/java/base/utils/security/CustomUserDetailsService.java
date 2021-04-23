@@ -60,7 +60,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         String res = encoder.encode(password);
 
         long executionTime = System.currentTimeMillis() - start;
-        log.warn("encode: выполнен за " + executionTime + "мс" );
+        log.trace("encode: выполнен за " + executionTime + "мс" );
         return res;
     }
 }

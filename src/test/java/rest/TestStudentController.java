@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import rest.helper.BaseTestHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("test")
-public class TestStudentController extends BaseTestHelper{
+public class TestStudentController extends BaseTestHelper {
 
     private final String url =      "http://localhost:%s/";
     private final String getAll =   url+"student/all";

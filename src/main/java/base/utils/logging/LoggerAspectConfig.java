@@ -34,20 +34,20 @@ public class LoggerAspectConfig {
         String args = Arrays.stream(jp.getArgs())
                 .map(a -> a.toString())
                 .collect(Collectors.joining(","));
-        log.info(logCurrentUserDetails());
-        log.info("before " + jp.getSignature().getName() /*jp.toString()*/ + ", args=[" + args + "]");
+        log.trace(logCurrentUserDetails());
+        log.trace("before " + jp.getSignature().getName() /*jp.toString()*/ + ", args=[" + args + "]");
     }
     @After("callControllerMethodGroup()")
     public void afterCallAtGetFilterProduct(JoinPoint jp) {
-        log.info(logCurrentUserDetails());
-        log.info("after " + jp.getSignature().getName() /*jp.toString()*/);
+        log.trace(logCurrentUserDetails());
+        log.trace("after " + jp.getSignature().getName() /*jp.toString()*/);
     }
 
     //AfterThrowing
     @AfterThrowing(value = "callControllerMethodGroup()", throwing = "exception")
     public void afterThrowingCallAtGetFilterProduct(JoinPoint jp, Exception exception) {
-        log.info(logCurrentUserDetails());
-        log.info( jp.getSignature().getName() /*jp.toString()*/+ " вызвал exception: " + exception.toString());
+        log.trace(logCurrentUserDetails());
+        log.trace( jp.getSignature().getName() /*jp.toString()*/+ " вызвал exception: " + exception.toString());
     }
 
     //AfterReturning
@@ -55,8 +55,8 @@ public class LoggerAspectConfig {
             "public * base.web.GroupController.*(..))",
             returning = "result" )
     public void logAfterReturningGroupController(JoinPoint jp,Object result) {
-        log.info(logCurrentUserDetails());
-        log.info( jp.getSignature().getName() /*jp.toString()*/+ " возвращенное значение: " + result.toString());
+        log.trace(logCurrentUserDetails());
+        log.trace( jp.getSignature().getName() /*jp.toString()*/+ " возвращенное значение: " + result.toString());
     }
 
     @Around("@annotation(LogExecutionTime)")
@@ -69,8 +69,8 @@ public class LoggerAspectConfig {
                 .map(a -> a.toString())
                 .collect(Collectors.joining(","));
 
-        log.info(logCurrentUserDetails());
-        log.info(jp.getSignature().getName() + " выполнен за " + executionTime + "мс"  + ", args=[" + args + "]");
+        log.trace(logCurrentUserDetails());
+        log.trace(jp.getSignature().getName() + " выполнен за " + executionTime + "мс"  + ", args=[" + args + "]");
         return proceed;
     }
 

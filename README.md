@@ -1,4 +1,4 @@
-#### Spring-boot-JPA-RestApi_microservice
+#### SpringbootRestApiMicroservice
 
 Учебный проект, основная задача:
 * разобраться в конфигурировании проекта при помощи Spring-Boot и пакетов starters;
@@ -15,5 +15,5 @@
 * добавлено документирование API springfox+swagger-ui: http://localhost:11095/swagger-ui/index.html#/
 
 Данный проект разработан с целью сравнения подходов к конфигурированию крассического Spring и Spring-Boot. 
-Проект для сравнения подходов: https://github.com/red-yellow-tulip/Spring-JPA-RestApi_microservice
+Проект для сравнения подходов: https://github.com/red-yellow-tulip/SpringRestApiMicroservice
 

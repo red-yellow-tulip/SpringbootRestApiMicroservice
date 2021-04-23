@@ -1,21 +1,20 @@
 package rest;
 
-import base.StudentMicroserviceRunner;
 import base.datasource.entity.Group;
 import base.web.config.SourceParameterWrapperGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import rest.helper.BaseTestHelper;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
-public class TestGroupController  extends BaseTestHelper{
+public class TestGroupController  extends BaseTestHelper {
 
     private final String url =      "http://localhost:%s/";
     private final String getAll = url + "group/all";
@@ -38,7 +37,7 @@ public class TestGroupController  extends BaseTestHelper{
         long start = System.currentTimeMillis();
         List<Group> allGroup = restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperGroup.ListWrapper.class);
         long executionTime = System.currentTimeMillis() - start;
-        log.warn("getAll выполнен за " + executionTime + "мс" );
+        //log.info("getAll выполнен за " + executionTime + "мс" );
 
         assertEquals (allGroup.size() , 5);
         log.trace(allGroup);
@@ -50,7 +49,7 @@ public class TestGroupController  extends BaseTestHelper{
         long start = System.currentTimeMillis();
         List<Group> allGroup = restTemplate.getForObject(String.format(filtr,port), SourceParameterWrapperGroup.ListWrapper.class);
         long executionTime = System.currentTimeMillis() - start;
-        log.warn("filtr выполнен за " + executionTime + "мс" );
+        //log.info("filtr выполнен за " + executionTime + "мс" );
 
         assertEquals (allGroup.size() , 1);
         log.trace(allGroup);
@@ -66,7 +65,7 @@ public class TestGroupController  extends BaseTestHelper{
         long start = System.currentTimeMillis();
         Group group1 = restTemplate.getForObject(String.format(groupId,port), Group.class);
         long executionTime = System.currentTimeMillis() - start;
-        log.warn("groupId выполнен за " + executionTime + "мс" );
+        //log.info("groupId выполнен за " + executionTime + "мс" );
 
         assertNotNull(group1);
         log.trace(group1);
@@ -81,14 +80,14 @@ public class TestGroupController  extends BaseTestHelper{
         long start = System.currentTimeMillis();
         ResponseEntity<Group> e = restTemplate.postForEntity(String.format(post,port), gr, Group.class);
         long executionTime = System.currentTimeMillis() - start;
-        log.warn("post выполнен за " + executionTime + "мс" );
+        //log.info("post выполнен за " + executionTime + "мс" );
         assertNotEquals(e.getStatusCode() , HttpStatus.FORBIDDEN);
         assertEquals(e.getStatusCode() , HttpStatus.CREATED);
-        log.trace(e.getStatusCode());
+        //log.info(e.getStatusCode());
 
         List<Group> allGroup1 = restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperGroup.ListWrapper.class);
         assertEquals (allGroup1.size() , 6);
-        log.trace(allGroup1);
+        //log.info(allGroup1);
     }
 
     @Test
@@ -99,13 +98,13 @@ public class TestGroupController  extends BaseTestHelper{
         long start = System.currentTimeMillis();
         ResponseEntity<Group> e = restTemplate.postForEntity(String.format(post,port), gr, Group.class);
         long executionTime = System.currentTimeMillis() - start;
-        log.warn("post выполнен за " + executionTime + "мс" );
+        //log.info("post выполнен за " + executionTime + "мс" );
         assertEquals (e.getStatusCode() , HttpStatus.CREATED);
-        log.trace(e.getStatusCode());
+        //log.info(e.getStatusCode());
         restTemplate.delete(String.format(del,port));
 
         List<Group> allGroup1 =  restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperGroup.ListWrapper.class);
         assertEquals (allGroup1.size() ,  5);
-        log.trace(allGroup1);
+        //log.info(allGroup1);
     }
 }

@@ -249,7 +249,7 @@
                 <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
 
                 <logging.file.path>/logs</logging.file.path>
-                <logging.level.root>INFO</logging.level.root>
+                <logging.level.root>info</logging.level.root>
 
                 <spring.liquibase.enabled>true</spring.liquibase.enabled>
                 <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>

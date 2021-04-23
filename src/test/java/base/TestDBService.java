@@ -42,12 +42,12 @@ public class TestDBService {
         University un2 = service.saveUniversity(un);
         assertNotNull (un2 );
         assertNotNull (un2.getId());
-        log.info(un2);
+        //log.info(un2);
 
         un = service.findUniversityById(id);
         assertNotNull (un);
         assertNotNull (un.getId() );
-        log.info(un);
+        //log.info(un);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class TestDBService {
         service.saveUniversity(un);
         List<Student> l = service.findStudentByGroupId(groupId);
 
-        log.info(l);
+        //log.info(l);
         assertEquals (l.size() ,  10);
         assertNotNull (l.get(5) );
     }
@@ -123,7 +123,7 @@ public class TestDBService {
         service.deleteStudent("name11","surname11");
         l = service.findStudentByGroupId(groupId);
 
-        log.info(l);
+        //log.info(l);
         assert (l.size() == 10);
     }
 
@@ -139,7 +139,7 @@ public class TestDBService {
             gr.setUniversity(un);
 
             for (int j = 1; j <= 10; j++) {
-                log.info(i+":"+j);
+                //log.info(i+":"+j);
                 Student s = new Student(("name" + i) +j, ("surname" +  i)+j, new Date());
                 s.setGroup(gr);
                 gr.getListStudents().add(s);
