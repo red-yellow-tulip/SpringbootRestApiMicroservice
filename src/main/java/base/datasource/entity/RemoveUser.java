@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users"  , schema = "university_schemas")
-public class UserDb {
+public class RemoveUser {
 
     @Getter @Setter
     @Id
@@ -32,11 +32,11 @@ public class UserDb {
     @Column (name = "role")
     private String role = "";
 
-    public UserDb() {
+    public RemoveUser() {
 
     }
 
-    public UserDb(String login, String password, String role, String name) {
+    public RemoveUser(String login, String password, String role, String name) {
         this.login = login;
         this.password = password;
         this.role = role;

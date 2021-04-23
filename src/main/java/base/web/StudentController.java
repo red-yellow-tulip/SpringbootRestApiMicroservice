@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
@@ -42,19 +43,34 @@ public class StudentController  extends  BaseController{
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listStudent);
     }
 
+    @ApiOperation(value = "Поиск всех student по имени и фамилии", notes = "method: StudentController.getFilterStudentEq" )
+    // RequestMethod.GET
+    // http://localhost:8080/student/eq?name=name1&sname=surname1
+    @RequestMapping(value = "/eq", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"name","sname"})
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<Student> getFilterStudentEq( @ApiParam (value = "имя")     @RequestParam(value="name", required=false, defaultValue="")  String name,
+                                                           @ApiParam (value = "фамилия") @RequestParam(value="sname", required=false, defaultValue="")  String sname) {
+
+        Optional<Student> op  = databaseService.findStudentByNameSurName(name,sname);
+        if (op.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(op.get());
+    }
+
     // RequestMethod.GET
     // http://localhost:8080/student?id=1000
     @ApiOperation(value = "Поиск student по id", notes = "method: StudentController.getStudentById")
     @RequestMapping(value = "", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },  params = {"id"})
     @ResponseBody
     @CrossOrigin
-        public ResponseEntity<Student> getStudentById(@ApiParam (value = "id student")   @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
+        public ResponseEntity<Student> getStudentById(@ApiParam (value = "id student")   @RequestParam(value="id", required=false, defaultValue="")  long id) {
 
-        if (!databaseService.isExistsStudent(groupId))
+        Optional<Student> op  = databaseService.findStudentById(id);
+        if (op.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        Student stud  = databaseService.findStudentById(groupId);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(stud);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(op.get());
     }
 
     // RequestMethod.GET
@@ -84,12 +100,12 @@ public class StudentController  extends  BaseController{
         if (databaseService.isExistsStudent(student.getName(),student.getSurname()))
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
-        Student temp = databaseService.addStudentByGroupId(student, groupId);
+        boolean isAdded = databaseService.addStudentToGroupByGroupId(student, groupId);
 
-        if (temp != null)
-            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.CREATED);
+        if (isAdded)
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
         else
-            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     // RequestMethod.PUT
@@ -104,20 +120,15 @@ public class StudentController  extends  BaseController{
         if (student == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        if (databaseService.isExistsStudent(student.getName(),student.getSurname())) {
-
-            Student oldSt = databaseService.findStudentByNameSurName(student.getName(),student.getSurname());
-            if (oldSt.equals(student))
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
+        Optional<Student> op = databaseService.findStudentByNameSurName(student.getName(),student.getSurname());
+        if (op.isPresent() && op.get().equals(student))
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
         if (studentIt != student.getId())
             return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
 
-        Student temp = databaseService.updateStudentId(studentIt, student);
-
-        if (temp != null)
-            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.OK);
+        if (databaseService.updateStudentId(studentIt, student).isPresent())
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
         else
             return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }

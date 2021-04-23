@@ -28,7 +28,7 @@ public class TestActuatorService extends BaseTestHelper {
     public void testBefore() {
         assertNotNull(service);
         service.clearTable();
-        service.createDemoData();
+        service.createDemoData(5,10);
     }
 
 

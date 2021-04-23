@@ -3,13 +3,17 @@ package base.datasource;
 import base.datasource.entity.Group;
 import base.datasource.entity.Student;
 import base.datasource.entity.University;
-import base.datasource.entity.UserDb;
+import base.datasource.entity.RemoveUser;
 import base.datasource.entity.jpa.GroupRepository;
 import base.datasource.entity.jpa.StudentRepository;
 import base.datasource.entity.jpa.UniversityRepository;
 import base.datasource.entity.jpa.UserRepository;
+import base.utils.logging.LoggerService;
 import base.utils.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,108 +40,62 @@ public class DatabaseService {
     @Resource  // таблица - user
     private UserRepository userRepository;
 
+    @Resource
+    private LoggerService loggerService;
+
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    private final long universityId = 100;
+    private final long universityId = 100;// гвозди
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //University
+    @Transactional (propagation = Propagation.REQUIRED )
+    public University saveUniversity(University un) {  return universityRepository.save(un);  }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    public University saveUniversity(University un) {
-        return universityRepository.save(un);
+    public List<University> findAllUniversity() {
+        return universityRepository.findAll();
     }
 
-
-    @Transactional (propagation = Propagation.REQUIRED )
-    public void clearTable() {
-        universityRepository.deleteAll();
-        groupRepository.deleteAll();
-        universityRepository.deleteAll();
-        userRepository.deleteAll();
-    }
     @Transactional (readOnly = true)
-    public University findUniversityById(long l) {
-        return universityRepository.findByUniversityId(l).orElse(null);
-    }
+    public Optional<University> findUniversityById(long l) { return universityRepository.findByUniversityId(l);  }
 
     @Transactional (readOnly = true)
     public List<Group> findListGroupByUniversityId(long id) {
-        Optional<University> u = universityRepository.findByUniversityId(id);
-        return new ArrayList<>(u.get().getListGroup());
+        Optional<University> op = universityRepository.findByUniversityId(id);
+        if (op.isEmpty())
+            return  new ArrayList<Group>();
+        return new ArrayList<>(op.get().getListGroup());
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    //Group
     @Transactional (readOnly = true)
     public ArrayList<Student> findStudentByGroupId(long groupId) {
-        Optional<Group> g = groupRepository.findByGroupId(groupId);
-        Group g0 = g.orElse(null);
-        return g0 == null ? new ArrayList<>(): new ArrayList<>(g0.getListStudents());
+        Optional<Group> op = groupRepository.findByGroupId(groupId);
+        if (op.isEmpty())
+            return new ArrayList<Student>();
+        return new ArrayList<>(op.get().getListStudents());
     }
-    @Transactional (propagation = Propagation.REQUIRED )
-    public Student addStudentByGroupId(Student s, long groupId) {
-        Group g = groupRepository.findByGroupId(groupId).orElse(null);
-        s.setGroupId(g.getGroupId());
-        s.setGroup(g);
 
+    @Transactional (propagation = Propagation.REQUIRED )
+    public boolean addStudentToGroupByGroupId(Student s, long groupId) {
+        Optional<Group> opg = groupRepository.findByGroupId(groupId);
+        if (opg.isEmpty())
+            return  false;
+
+        Group g = opg.get();
+        s.setGroupByGroupObject(g);
         g.getListStudents().add(s);
         groupRepository.save(g);
-
-        Optional<Student> op = studentRepository.findByNameAndSurname(s.getName(),s.getSurname());
-        return  op.orElse(null);
-
+        return true;
     }
 
-    @Transactional (readOnly = true)
-    public Student getStudentByNameAndSurname(String n,String sn) {
-        Optional<Student> op = studentRepository.findByNameAndSurname(n,sn);
-        return  op.orElse(null);
-    }
-
-    @Transactional (readOnly = true)
-    public boolean isExistsStudent(String n,String sn) {
-        Optional<Student> op = studentRepository.findByNameAndSurname(n,sn);
-        return  op.isPresent();
-    }
-
-    @Transactional (readOnly = true)
-    public Student findStudentByNameSurName(String n, String sn) {
-        Optional<Student> op = studentRepository.findByNameAndSurname(n,sn);
-        return op.get();
-    }
-
-    @Transactional (readOnly = true)
-    public boolean isExistsStudent(long groupId) {
-        Optional<Student> op = studentRepository.findById(groupId);
-        return  op.isPresent();
-    }
-
-    @Transactional (readOnly = true)
-    public List<Student> findAllStudent() {
-        return studentRepository.findAll();
-    }
-
-    @Transactional (readOnly = true)
-    public List<Student> findAllStudentByNameLikeOrSurnameLike(String name, String sname) {
-
-        //return studentRepository.findAllByNameLikeOrSurnameLike(name,sname);
-        return studentRepository.findAllByNameLikeAndSurnameLike("%"+name+"%","%"+sname+"%");
-
-    }
     @Transactional (readOnly = true)
     public boolean isExistsGroupById(long groupId) {
-        Optional<Group> gr = groupRepository.findByGroupId(groupId);
-        return gr.isPresent();
-    }
-
-    @Transactional (propagation = Propagation.REQUIRED )
-    public void deleteStudent(String name, String sname) {
-
-        Student s = studentRepository.findByNameAndSurname(name,sname).get();
-
-        Group g = groupRepository.findById(s.getGroupId()).get();
-        if (g.getListStudents().contains(s)){
-            g.getListStudents().remove(s);
-        }
-        groupRepository.save(g);
-        studentRepository.delete(s);
+        return groupRepository.findByGroupId(groupId).isPresent();
     }
 
     @Transactional (readOnly = true)
@@ -151,117 +109,169 @@ public class DatabaseService {
     }
 
     @Transactional (readOnly = true)
-    public Group findGroupById(long groupId) {
-        Optional<Group> g = groupRepository.findByGroupId(groupId);
-        return g.orElse(null);
+    public Optional<Group> findGroupById(long groupId) {
+        return groupRepository.findByGroupId(groupId);
     }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    public Group addNewGroup(Group gr) {
+    public boolean addNewGroup(Group gr) {
 
-        if (universityRepository.findAll().size() == 0){
-            createRandomUniversity();
-        }
+        Optional<University> op = universityRepository.findByUniversityId(universityId);
+        if (op.isEmpty())
+            return  false;
 
-        University un = universityRepository.findByUniversityId(universityId).get();
+        University un = op.get();
         gr.setUniversity(un);
         un.getListGroup().add(gr);
         universityRepository.save(un);
-
-        Optional<Group> n = groupRepository.findByGroupName(gr.getGroupName());
-        return n.orElse(null);
+        return true;
     }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    public void deleteGroup(long groupId) {
-        Group g = groupRepository.findByGroupId(groupId).get();
-        University un = universityRepository.findByUniversityId(universityId).get();
+    public boolean deleteGroup(long groupId) {
+        Optional<Group> op = groupRepository.findByGroupId(groupId);
+        if (op.isEmpty())
+            return true;
 
-        if (un.getListGroup().contains(g))
-            un.getListGroup().remove(g);
+        Group g = op.get();
+        Optional<University> opu = universityRepository.findByUniversityId(universityId);
+        if (opu.isEmpty())
+            return false;
+
+        University un = opu.get();
+        un.getListGroup().remove(g);
         universityRepository.save(un);
         groupRepository.delete(g);
+        return true;
     }
 
     @Transactional (readOnly = true)
     public int getCountStudentByGroupId(long groupId) {
-        List<Student> l = findStudentByGroupId(groupId);
-        return l.size();
+        return findStudentByGroupId(groupId).size();
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //Student
+    @Transactional (readOnly = true)
+    @CachePut(value = "Student.id", key = "#id")
+    public Optional<Student> findStudentById(long id) {
+        loggerService.log().info(String.format("method: findStudentById read from db: id %s",id));
+        return studentRepository.findById(id);
+    }
+
+    @CachePut(value = "Student", key = "#n+#sn")
+    @Transactional (readOnly = true)
+    public boolean isExistsStudent(String n,String sn) {
+        loggerService.log().info(String.format("method: isExistsStudent read from db: params %s   %S",n,sn));
+        return  studentRepository.findByNameAndSurname(n,sn).isPresent();
+    }
+    @CachePut(value = "Student", key = "#n+#sn")
+    @Transactional (readOnly = true)
+    public Optional<Student> findStudentByNameSurName(String n, String sn) {
+        loggerService.log().info(String.format("method: findStudentByNameSurName read from db: params %s   %S",n,sn));
+        return studentRepository.findByNameAndSurname(n,sn);
     }
 
     @Transactional (readOnly = true)
-    public Student findStudentById(long groupId) {
-        return studentRepository.findById(groupId).orElse(null);
+    public List<Student> findAllStudent() {
+        return studentRepository.findAll();
     }
 
+    @Transactional (readOnly = true)
+    public List<Student> findAllStudentByNameLikeOrSurnameLike(String name, String sname) {
+        return studentRepository.findAllByNameLikeAndSurnameLike("%"+name+"%","%"+sname+"%");
+    }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    public Student updateStudentId(long studentId, Student newStudent) {
+    @CachePut(value = "Student", key = "#newStudent.name+#newStudent.surname")// обновить данные в кеше согласно return
+    public Optional<Student> updateStudentId(long studentId, Student newStudent) {
 
-        Student sOld = studentRepository.findById(studentId).get();
-        sOld.setName(newStudent.getName());
-        sOld.setSurname(newStudent.getSurname());
-        sOld.setDateBirth(newStudent.getDateBirth());
-        studentRepository.save(sOld);
+        Optional<Student> ops = studentRepository.findById(studentId);
+        if (ops.isEmpty())
+            return  Optional.empty();
+        Student sOld = ops.get().updateParam(newStudent);
 
-        if (sOld.getGroupId() != newStudent.getGroupId()){
-            Group rg1 = groupRepository.findById(sOld.getGroupId()).get();
-            Group rg2 = groupRepository.findById(newStudent.getGroupId()).get();
-
-          /*  rg1.getListStudents().remove(sOld);
-            rg2.getListStudents().add(sOld);*/
-            sOld.setGroup(rg2);
-
-         /*   groupRepository.save(rg1);
-            groupRepository.save(rg2);
-            studentRepository.save(sOld);*/
-
+        if (!sOld.getGroupId().equals(newStudent.getGroupId())){
+            Optional<Group> opg = groupRepository.findById(newStudent.getGroupId());
+            if (opg.isEmpty())
+                return  Optional.empty();
+            sOld.setGroup(opg.get());
         }
-        return studentRepository.findById(studentId).get();
+        studentRepository.save(sOld);
+        loggerService.log().info(String.format("method: updateStudentId read from db: params %s   %S",newStudent.getName(),newStudent.getSurname()));
+        return Optional.of(studentRepository.save(sOld));
     }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    void createRandomUniversity() {
+    @CacheEvict(value = "Student", key = "#name+#sname")
+    public boolean deleteStudent(String name, String sname) {
 
-        University un = new University(universityId,"Bestuniversity_random");
-        universityRepository.save(un);
+        Optional<Student> ops =  studentRepository.findByNameAndSurname(name,sname);
+        if (ops.isEmpty())
+            return  false;
+        Student s = ops.get();
+
+        Optional<Group> opg = groupRepository.findById(s.getGroupId());
+        if (opg.isEmpty())
+            return  false;
+
+        Group g = opg.get();
+        g.getListStudents().remove(s);
+
+        groupRepository.save(g);
+        studentRepository.delete(s);
+        loggerService.log().info(String.format("method: deleteStudent read from db: params %s   %S",name,sname));
+        return true;
     }
 
-    @Transactional (propagation = Propagation.REQUIRED )
-    public List<University> findAllUniversity() {
-        return universityRepository.findAll();
-    }
 
+
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //RemoveUser
+    @CachePut(value = "RemoveUser", key = "#user.name")// обновить данные в кеше согласно return
     @Transactional (propagation = Propagation.REQUIRED )
-    public UserDb AddUsers(UserDb u){
-        u.setPassword(customUserDetailsService.encode(u.getPassword()));
-        //u.setPassword(u.getPassword());
-        return userRepository.save(u);
+    public RemoveUser AddRemoveUser(RemoveUser user){
+        user.setPassword(customUserDetailsService.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     @Transactional (readOnly = true)
-    public UserDb findUserByLogin(String userName) {
-        return userRepository.findByLogin(userName).get();
+    @Cacheable(value =  "RemoveUser", key = "#userName")// закеширвоать значение
+    public Optional<RemoveUser> findRemoveByLogin(String userName) {
+        loggerService.log().info(String.format("method: findUserByLogin read from db: param %s",userName));
+        return userRepository.findByLogin(userName);
+    }
+
+    @Transactional (readOnly = true)
+    @CacheEvict(value =  "RemoveUser", key = "#userName") //удалить данные из кеша
+    public void deleteRemoteUser(RemoveUser user){
+        userRepository.delete(user);
     }
 
 
-    public void createDemoData() {
+    //------------------------------------------------------------------------------------------------------------------
+    //DemoData
+
+    public void createDemoData(int groupCount,int studentCount) {
 
         clearTable();
 
-        AddUsers(new UserDb("USER1","pswd","USER", "userName"));
-        AddUsers(new UserDb("USER2","pswd","USER","userName"));
-        AddUsers(new UserDb("ADMIN","pswd","ADMIN","userName"));
+        AddRemoveUser(new RemoveUser("USER1","pswd","USER", "userName"));
+        AddRemoveUser(new RemoveUser("USER2","pswd","USER","userName"));
+        AddRemoveUser(new RemoveUser("ADMIN","pswd","ADMIN","userName"));
 
-        long id = 100L, groupIdn = 10;
+        long id = 100L;
         University un = new University(id, "Best university");
 
-        for (long j = 0; j < 5; j++) {
-            Group gr = new Group(groupIdn + j, "group" + j);
+        for (long j = 0; j < groupCount; j++) {
+            Group gr = new Group(groupCount + j, "group" + j);
             gr.setUniversity(un);
             gr.setGroupId(50 + j);
 
-            for (long i = j * 10; i < j * 10 + 10; i++) {
+            for (long i = j * studentCount; i < j * studentCount + studentCount; i++) {
                 Student s = new Student("name" + i, "surname" + i, new Date());
                 s.setGroup(gr);
                 gr.getListStudents().add(s);
@@ -270,4 +280,13 @@ public class DatabaseService {
         }
         saveUniversity(un);
     }
+
+    @Transactional (propagation = Propagation.REQUIRED )
+    public void clearTable() {
+        universityRepository.deleteAll();
+        groupRepository.deleteAll();
+        universityRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
 }

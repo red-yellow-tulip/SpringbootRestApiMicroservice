@@ -87,6 +87,15 @@ public class Student implements Serializable {
     }
 
 
+    public void setGroupByGroupObject(Group g) {
+        this.group = g;
+        this.groupId = g.getGroupId();
+    }
 
-
+    public Student updateParam(Student newStudent) {
+        this.name = newStudent.getName();
+        this.surname = newStudent.getSurname();
+        this.dateBirth = newStudent.getDateBirth();
+        return this;
+    }
 }

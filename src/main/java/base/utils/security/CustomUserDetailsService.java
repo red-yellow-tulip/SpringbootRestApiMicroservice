@@ -1,11 +1,11 @@
 package base.utils.security;
 
 import base.datasource.DatabaseService;
-import base.datasource.entity.UserDb;
+import base.datasource.entity.RemoveUser;
+import base.utils.logging.LoggerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.User;
@@ -15,11 +15,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.Optional;
+
 @Configuration
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private static final Logger log = LogManager.getLogger(CustomUserDetailsService.class.getName());
+    @Resource
+    private LoggerService loggerService;
 
     @Autowired
     private DatabaseService databaseService;
@@ -32,21 +36,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
-        UserDb connectUser = databaseService.findUserByLogin(userName);
+        Optional<RemoveUser> opm = databaseService.findRemoveByLogin(userName);
 
-        if (connectUser == null) {
-            log.warn("Unknown user: "+userName);
+        if (opm.isEmpty()) {
+            loggerService.log().warn("Unknown user: "+userName);
             throw new UsernameNotFoundException("Unknown user: "+userName);
         }
-
-        UserDetails user = User.builder()
+        RemoveUser connectUser = opm.get();
+        return  User.builder()
                 .username(connectUser.getLogin())
                 //.password(encoder.encode(connectUser.getPassword()))
                 .password(connectUser.getPassword())
                 .roles(connectUser.getRole())
                 .build();
-
-        return user;
     }
 
     @Bean
@@ -60,7 +62,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         String res = encoder.encode(password);
 
         long executionTime = System.currentTimeMillis() - start;
-        log.trace("encode: выполнен за " + executionTime + "мс" );
+        loggerService.log().trace("encode: выполнен за " + executionTime + "мс" );
         return res;
     }
 }

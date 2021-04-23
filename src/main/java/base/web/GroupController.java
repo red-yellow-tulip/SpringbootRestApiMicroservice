@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/group")
@@ -55,11 +56,11 @@ public class GroupController extends  BaseController{
     @LogExecutionTime
     public ResponseEntity<Group> getFilterGroup(@ApiParam(value = "id группы") @RequestParam(value="id", required=false, defaultValue="")  long groupId) {
 
-        Group g  = databaseService.findGroupById(groupId);
-        if (g == null) {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(null);
+        Optional<Group> op  = databaseService.findGroupById(groupId);
+        if (op.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(g);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(op.get());
     }
 
     // RequestMethod.POST
@@ -77,12 +78,10 @@ public class GroupController extends  BaseController{
         if (databaseService.isExistsGroupById(gr.getGroupId()))
             return new ResponseEntity<>(HttpStatus.CONFLICT);
 
-        Group temp = databaseService.addNewGroup(gr);
-
-        if (temp != null)
-            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.CREATED);
+        if (databaseService.addNewGroup(gr))
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.CREATED);
         else
-            return new ResponseEntity<>(temp, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     // RequestMethod.DELETE
@@ -100,7 +99,9 @@ public class GroupController extends  BaseController{
         if ( 0 != databaseService.getCountStudentByGroupId(groupId))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        databaseService.deleteGroup(groupId);
-        return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
+        if (databaseService.deleteGroup(groupId))
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

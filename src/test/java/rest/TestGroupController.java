@@ -28,7 +28,7 @@ public class TestGroupController  extends BaseTestHelper {
     public void testBefore() {
         assertNotNull(service);
         service.clearTable();
-        service.createDemoData();
+        service.createDemoData(5,10);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class TestGroupController  extends BaseTestHelper {
         //log.info("getAll выполнен за " + executionTime + "мс" );
 
         assertEquals (allGroup.size() , 5);
-        log.trace(allGroup);
+        loggerService.log().trace(allGroup);
     }
 
     @Test
@@ -52,11 +52,11 @@ public class TestGroupController  extends BaseTestHelper {
         //log.info("filtr выполнен за " + executionTime + "мс" );
 
         assertEquals (allGroup.size() , 1);
-        log.trace(allGroup);
+        loggerService.log().trace(allGroup);
 
         List<Group> allGroup1 =  restTemplate.getForObject(String.format(filtr1,port), SourceParameterWrapperGroup.ListWrapper.class);
         assertEquals (allGroup1.size() ,5);
-        log.trace(allGroup1);
+        loggerService.log().trace(allGroup1);
     }
 
     @Test
@@ -65,10 +65,10 @@ public class TestGroupController  extends BaseTestHelper {
         long start = System.currentTimeMillis();
         Group group1 = restTemplate.getForObject(String.format(groupId,port), Group.class);
         long executionTime = System.currentTimeMillis() - start;
-        //log.info("groupId выполнен за " + executionTime + "мс" );
+        //loggerService.log().info("groupId выполнен за " + executionTime + "мс" );
 
         assertNotNull(group1);
-        log.trace(group1);
+        loggerService.log().trace(group1);
     }
 
     @Test
@@ -80,14 +80,14 @@ public class TestGroupController  extends BaseTestHelper {
         long start = System.currentTimeMillis();
         ResponseEntity<Group> e = restTemplate.postForEntity(String.format(post,port), gr, Group.class);
         long executionTime = System.currentTimeMillis() - start;
-        //log.info("post выполнен за " + executionTime + "мс" );
+        //loggerService.log().info("post выполнен за " + executionTime + "мс" );
         assertNotEquals(e.getStatusCode() , HttpStatus.FORBIDDEN);
         assertEquals(e.getStatusCode() , HttpStatus.CREATED);
-        //log.info(e.getStatusCode());
+        //loggerService.log().info(e.getStatusCode());
 
         List<Group> allGroup1 = restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperGroup.ListWrapper.class);
         assertEquals (allGroup1.size() , 6);
-        //log.info(allGroup1);
+        //loggerService.log().info(allGroup1);
     }
 
     @Test
@@ -98,13 +98,13 @@ public class TestGroupController  extends BaseTestHelper {
         long start = System.currentTimeMillis();
         ResponseEntity<Group> e = restTemplate.postForEntity(String.format(post,port), gr, Group.class);
         long executionTime = System.currentTimeMillis() - start;
-        //log.info("post выполнен за " + executionTime + "мс" );
+        //loggerService.log().info("post выполнен за " + executionTime + "мс" );
         assertEquals (e.getStatusCode() , HttpStatus.CREATED);
-        //log.info(e.getStatusCode());
+        //loggerService.log().info(e.getStatusCode());
         restTemplate.delete(String.format(del,port));
 
         List<Group> allGroup1 =  restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperGroup.ListWrapper.class);
         assertEquals (allGroup1.size() ,  5);
-        //log.info(allGroup1);
+        //loggerService.log().info(allGroup1);
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,8 @@ import java.util.stream.Collectors;
 @Aspect
 public class LoggerAspectConfig {
 
-    private static final Logger log = LogManager.getLogger(LoggerAspectConfig.class.getName());
+    @Resource
+    private LoggerService loggerService;
 
     // GroupController
     // *****************************************************************************************************************
@@ -34,20 +37,20 @@ public class LoggerAspectConfig {
         String args = Arrays.stream(jp.getArgs())
                 .map(a -> a.toString())
                 .collect(Collectors.joining(","));
-        log.trace(logCurrentUserDetails());
-        log.trace("before " + jp.getSignature().getName() /*jp.toString()*/ + ", args=[" + args + "]");
+        loggerService.log().trace(logCurrentUserDetails());
+        loggerService.log().trace("before " + jp.getSignature().getName() /*jp.toString()*/ + ", args=[" + args + "]");
     }
     @After("callControllerMethodGroup()")
     public void afterCallAtGetFilterProduct(JoinPoint jp) {
-        log.trace(logCurrentUserDetails());
-        log.trace("after " + jp.getSignature().getName() /*jp.toString()*/);
+        loggerService.log().trace(logCurrentUserDetails());
+        loggerService.log().trace("after " + jp.getSignature().getName() /*jp.toString()*/);
     }
 
     //AfterThrowing
     @AfterThrowing(value = "callControllerMethodGroup()", throwing = "exception")
     public void afterThrowingCallAtGetFilterProduct(JoinPoint jp, Exception exception) {
-        log.trace(logCurrentUserDetails());
-        log.trace( jp.getSignature().getName() /*jp.toString()*/+ " вызвал exception: " + exception.toString());
+        loggerService.log().trace(logCurrentUserDetails());
+        loggerService.log().trace( jp.getSignature().getName() /*jp.toString()*/+ " вызвал exception: " + exception.toString());
     }
 
     //AfterReturning
@@ -55,8 +58,8 @@ public class LoggerAspectConfig {
             "public * base.web.GroupController.*(..))",
             returning = "result" )
     public void logAfterReturningGroupController(JoinPoint jp,Object result) {
-        log.trace(logCurrentUserDetails());
-        log.trace( jp.getSignature().getName() /*jp.toString()*/+ " возвращенное значение: " + result.toString());
+        loggerService.log().trace(logCurrentUserDetails());
+        loggerService.log().trace( jp.getSignature().getName() /*jp.toString()*/+ " возвращенное значение: " + result.toString());
     }
 
     @Around("@annotation(LogExecutionTime)")
@@ -69,8 +72,8 @@ public class LoggerAspectConfig {
                 .map(a -> a.toString())
                 .collect(Collectors.joining(","));
 
-        log.trace(logCurrentUserDetails());
-        log.trace(jp.getSignature().getName() + " выполнен за " + executionTime + "мс"  + ", args=[" + args + "]");
+        loggerService.log().trace(logCurrentUserDetails());
+        loggerService.log().trace(jp.getSignature().getName() + " выполнен за " + executionTime + "мс"  + ", args=[" + args + "]");
         return proceed;
     }
 

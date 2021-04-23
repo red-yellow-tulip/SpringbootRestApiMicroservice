@@ -32,7 +32,7 @@ public class TestStudentController extends BaseTestHelper {
     public void testBefore() {
         assertNotNull(service);
         service.clearTable();
-        service.createDemoData();
+        service.createDemoData(5,10);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class TestStudentController extends BaseTestHelper {
         List<Student> allStudent = restTemplate.getForObject(String.format(getAll,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent);
         assertEquals(allStudent.size() , 50);
-        log.trace(allStudent);
+        loggerService.log().trace(allStudent);
     }
 
     @Test
@@ -51,12 +51,12 @@ public class TestStudentController extends BaseTestHelper {
         List<Student> allStudent = restTemplate.getForObject(String.format(filtr,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent);
         assertEquals(allStudent.size() , 50);
-        log.trace(allStudent);
+        loggerService.log().trace(allStudent);
 
         List<Student> allStudent1 = restTemplate.getForObject(String.format(filtr1,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent1);
         assertEquals(allStudent1.size(), 1);
-        log.trace(allStudent1);
+        loggerService.log().trace(allStudent1);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TestStudentController extends BaseTestHelper {
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent);
         assertEquals(allStudent.size() , 10);
-        log.trace(allStudent);
+        loggerService.log().trace(allStudent);
     }
 
 
@@ -84,12 +84,12 @@ public class TestStudentController extends BaseTestHelper {
             Student s = new Student("name"+60+i,"surname"+60+i,new Date());
             ResponseEntity<Student> e = restTemplate.postForEntity(String.format(post,port),s,Student.class);
             assertEquals(e.getStatusCode(),  HttpStatus.CREATED);
-            log.trace(e.getStatusCode());
+            loggerService.log().trace(e.getStatusCode());
         }
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent);
         assertEquals(allStudent.size(),20);
-        log.trace(allStudent);
+        loggerService.log().trace(allStudent);
     }
 
     @Test
@@ -100,6 +100,6 @@ public class TestStudentController extends BaseTestHelper {
         List<Student> allStudent = restTemplate.getForObject(String.format(groupId,port), SourceParameterWrapperStudent.ListWrapper.class);
         assertNotNull(allStudent);
         assertEquals(allStudent.size() , 9);
-        log.trace(allStudent);
+        loggerService.log().trace(allStudent);
     }
 }

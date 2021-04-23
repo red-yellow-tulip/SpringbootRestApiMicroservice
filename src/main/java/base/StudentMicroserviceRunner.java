@@ -9,11 +9,14 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
+//@EnableCaching
 public class StudentMicroserviceRunner implements  ApplicationRunner{
 
     private static final Logger log = LoggerFactory.getLogger(StudentMicroserviceRunner.class);
+
     @Autowired
     private DatabaseService databaseService;
 
@@ -30,7 +33,7 @@ public class StudentMicroserviceRunner implements  ApplicationRunner{
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (databaseService.findAllUniversity().isEmpty())
-            databaseService.createDemoData();
+            databaseService.createDemoData(10,10);
         log.info(String.format("start app: %s, port: %s",name,port));
     }
 }

@@ -1,28 +1,23 @@
 package base;
 
+import base.datasource.DatabaseService;
 import base.datasource.entity.Group;
 import base.datasource.entity.Student;
 import base.datasource.entity.University;
-import base.datasource.DatabaseService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import rest.helper.BaseTestHelper;
+
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ContextConfiguration(classes = StudentMicroserviceRunner.class)
 @ActiveProfiles("test")
-public class TestDBService {
-
-    private static final Logger log = LogManager.getLogger(TestDBService.class.getName());
+public class TestDBService extends BaseTestHelper {
 
     @Resource
     private DatabaseService service;
@@ -44,9 +39,9 @@ public class TestDBService {
         assertNotNull (un2.getId());
         //log.info(un2);
 
-        un = service.findUniversityById(id);
-        assertNotNull (un);
-        assertNotNull (un.getId() );
+        Optional<University> op = service.findUniversityById(id);
+        assertTrue (op.isPresent());
+        assertNotNull (op.get().getId() );
         //log.info(un);
     }
 
@@ -110,12 +105,11 @@ public class TestDBService {
         List<Student> l = service.findStudentByGroupId(groupId);
 
         Student s0 = new Student("name11","surname11",new Date());
-        Student s00 = service.addStudentByGroupId(s0,groupId);
-        assertNotNull (s00 );
+        assertTrue(service.addStudentToGroupByGroupId(s0,groupId));
 
-        Student s001 = service.getStudentByNameAndSurname("name11","surname11");
-        assertNotNull (s001 );
-        assertNotEquals (s001.getGroupId() , 11L);
+        Optional<Student> op = service.findStudentByNameSurName("name11","surname11");
+        assertTrue (op.isPresent());
+        assertNotEquals (op.get().getGroupId() , 11L);
 
         l = service.findStudentByGroupId(groupId);
         assert (l.size() == 11);
