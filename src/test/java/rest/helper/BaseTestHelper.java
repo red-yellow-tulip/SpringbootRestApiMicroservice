@@ -2,6 +2,7 @@ package rest.helper;
 
 import base.StudentMicroserviceRunner;
 import base.datasource.DatabaseService;
+import liquibase.integration.spring.SpringLiquibase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,9 @@ public class BaseTestHelper {
 
     @LocalServerPort
     protected String port;
+
+    @Autowired
+    private SpringLiquibase springLiquibase;
 
     protected TestRestTemplate restTemplate = new TestRestTemplate("ADMIN", "pswd");
 
