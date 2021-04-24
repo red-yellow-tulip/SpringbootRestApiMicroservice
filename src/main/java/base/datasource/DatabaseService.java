@@ -150,27 +150,26 @@ public class DatabaseService {
         return findStudentByGroupId(groupId).size();
     }
 
-
     //------------------------------------------------------------------------------------------------------------------
     //Student
     @Transactional (readOnly = true)
-    @CachePut(value = "Student.id", key = "#id")
+    @Cacheable(value = "Student.id", key = "#id")
     public Optional<Student> findStudentById(long id) {
         loggerService.log().info(String.format("method: findStudentById read from db: id %s",id));
         return studentRepository.findById(id);
     }
 
-    @CachePut(value = "Student", key = "#n+#sn")
+    @Cacheable(value = "Student.flag", key = "#name+#surname")
     @Transactional (readOnly = true)
-    public boolean isExistsStudent(String n,String sn) {
-        loggerService.log().info(String.format("method: isExistsStudent read from db: params %s   %S",n,sn));
-        return  studentRepository.findByNameAndSurname(n,sn).isPresent();
+    public boolean isExistsStudent(String name,String surname) {
+        loggerService.log().info(String.format("method: isExistsStudent read from db: params %s   %s",name,surname));
+        return  studentRepository.findByNameAndSurname(name,surname).isPresent();
     }
-    @CachePut(value = "Student", key = "#n+#sn")
+    @Cacheable(value = "Student.fio", key = "#name+#surname")
     @Transactional (readOnly = true)
-    public Optional<Student> findStudentByNameSurName(String n, String sn) {
-        loggerService.log().info(String.format("method: findStudentByNameSurName read from db: params %s   %S",n,sn));
-        return studentRepository.findByNameAndSurname(n,sn);
+    public Optional<Student> findStudentByNameSurName(String name, String surname) {
+        loggerService.log().info(String.format("method: findStudentByNameSurName read from db: params %s   %s",name,surname));
+        return studentRepository.findByNameAndSurname(name,surname);
     }
 
     @Transactional (readOnly = true)
@@ -184,7 +183,7 @@ public class DatabaseService {
     }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    @CachePut(value = "Student", key = "#newStudent.name+#newStudent.surname")// обновить данные в кеше согласно return
+    @CachePut(value = "Student.fio", key = "#newStudent.name+#newStudent.surname")// обновить данные в кеше согласно return
     public Optional<Student> updateStudentId(long studentId, Student newStudent) {
 
         Optional<Student> ops = studentRepository.findById(studentId);
@@ -199,15 +198,14 @@ public class DatabaseService {
             sOld.setGroup(opg.get());
         }
         studentRepository.save(sOld);
-        loggerService.log().info(String.format("method: updateStudentId read from db: params %s   %S",newStudent.getName(),newStudent.getSurname()));
         return Optional.of(studentRepository.save(sOld));
     }
 
     @Transactional (propagation = Propagation.REQUIRED )
-    @CacheEvict(value = "Student", key = "#name+#sname")
-    public boolean deleteStudent(String name, String sname) {
+    @CacheEvict(value = "Student.fio", key = "#name+#surname")
+    public boolean deleteStudent(String name, String surname) {
 
-        Optional<Student> ops =  studentRepository.findByNameAndSurname(name,sname);
+        Optional<Student> ops =  studentRepository.findByNameAndSurname(name,surname);
         if (ops.isEmpty())
             return  false;
         Student s = ops.get();
@@ -221,11 +219,8 @@ public class DatabaseService {
 
         groupRepository.save(g);
         studentRepository.delete(s);
-        loggerService.log().info(String.format("method: deleteStudent read from db: params %s   %S",name,sname));
         return true;
     }
-
-
 
 
 
@@ -246,7 +241,7 @@ public class DatabaseService {
     }
 
     @Transactional (readOnly = true)
-    @CacheEvict(value =  "RemoveUser", key = "#userName") //удалить данные из кеша
+    @CacheEvict(value =  "RemoveUser", key = "#user.name") //удалить данные из кеша
     public void deleteRemoteUser(RemoveUser user){
         userRepository.delete(user);
     }

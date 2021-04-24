@@ -26,6 +26,7 @@ public class TestDBService extends BaseTestHelper {
     public void testBefore() {
         assertNotNull(service);
         service.clearTable();
+       // service.createDemoData(5,10);
     }
 
     @Test
@@ -107,8 +108,22 @@ public class TestDBService extends BaseTestHelper {
         Student s0 = new Student("name11","surname11",new Date());
         assertTrue(service.addStudentToGroupByGroupId(s0,groupId));
 
+        loggerService.log().info("name: first read");
         Student op = service.findStudentByNameSurName("name11","surname11").get();
         assertNotEquals (op.getGroupId() , 11L);
+
+        loggerService.log().info("name: second read"); //cached
+        Student op2 = service.findStudentByNameSurName("name11","surname11").get();
+        assertNotEquals (op2.getGroupId() , 11L);
+
+        long studentId = op2.getId();
+        loggerService.log().info("id: first read");
+        Student opId = service.findStudentById(studentId).get();
+        assertEquals (opId.getId() , studentId);
+
+        loggerService.log().info("id: second read");  //cached
+        Student opId2 = service.findStudentById(studentId).get();
+        assertEquals (opId2.getId() , studentId);
 
         l = service.findStudentByGroupId(groupId);
         assert (l.size() == 11);
@@ -118,27 +133,5 @@ public class TestDBService extends BaseTestHelper {
 
         //log.info(l);
         assert (l.size() == 10);
-    }
-
-    @Test
-    public void createTest() {
-
-        service.clearTable();
-        long id = 100L, groupId = 1000;
-        University un = new University(id, "Best university");
-
-        for (char i = 'A'; i < 'Z'; i++) {
-            Group gr = new Group(groupId + i, "group" +i);
-            gr.setUniversity(un);
-
-            for (int j = 1; j <= 10; j++) {
-                //log.info(i+":"+j);
-                Student s = new Student(("name" + i) +j, ("surname" +  i)+j, new Date());
-                s.setGroup(gr);
-                gr.getListStudents().add(s);
-            }
-            un.getListGroup().add(gr);
-        }
-        service.saveUniversity(un);
     }
 }

@@ -152,11 +152,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-            <version>2.7.0</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1.1-jre</version>
         </dependency>
-
 
     </dependencies>
 
@@ -225,7 +224,7 @@
                     <server.port>8095</server.port>
                     <spring.application.name>studentMicroservice</spring.application.name>
                     <logging.file.path>/logs</logging.file.path>
-                    <logging.level.root>INFO</logging.level.root>
+                    <logging.level.root>info</logging.level.root>
 
                     <spring.liquibase.enabled>true</spring.liquibase.enabled>
                     <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
@@ -249,7 +248,7 @@
                     <server.port>11095</server.port>
                     <spring.application.name>testController</spring.application.name>
                     <logging.file.path>/logs</logging.file.path>
-                    <logging.level.root>warn</logging.level.root>
+                    <logging.level.root>info</logging.level.root>
 
                     <spring.liquibase.enabled>true</spring.liquibase.enabled>
                     <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
@@ -271,7 +270,7 @@
                 <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
 
                 <logging.file.path>/logs</logging.file.path>
-                <logging.level.root>warn</logging.level.root>
+                <logging.level.root>info</logging.level.root>
 
                 <spring.liquibase.enabled>true</spring.liquibase.enabled>
                 <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>

@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableCaching
+//@EnableCaching
 public class StudentMicroserviceRunner implements  ApplicationRunner{
     private static final Logger log = LoggerFactory.getLogger(StudentMicroserviceRunner.class);
 
