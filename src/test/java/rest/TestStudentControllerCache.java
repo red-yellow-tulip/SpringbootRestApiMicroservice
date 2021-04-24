@@ -49,7 +49,7 @@ public class TestStudentControllerCache extends BaseTestHelper {
 
         TimeUnit.SECONDS.sleep(1); // соответствует преиоду хранения кеша
 
-        // чтение данных с истекшим сроком хранения - снова обращение к БД
+        //  чтение данных - чтение из хеша   - то есть БЕЗ обращение к СУБД
         loggerService.log().info("executionTimeAfter starts...");
         long executionTimeAfter =  executeGetObjects(allStudent);
 
