@@ -1,4 +1,4 @@
-package base.datasource.entity;
+package base.datasource.sqlDb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

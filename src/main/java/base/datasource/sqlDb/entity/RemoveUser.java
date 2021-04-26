@@ -1,4 +1,4 @@
-package base.datasource.entity;
+package base.datasource.sqlDb.entity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,8 @@
 package rest;
 
-import base.datasource.entity.Group;
-import base.datasource.entity.Student;
-import base.datasource.entity.University;
+import base.datasource.sqlDb.entity.Group;
+import base.datasource.sqlDb.entity.Student;
+import base.datasource.sqlDb.entity.University;
 import base.web.config.SourceParameterWrapperStudent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

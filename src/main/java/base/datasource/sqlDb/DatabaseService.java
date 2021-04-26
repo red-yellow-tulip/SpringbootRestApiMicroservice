@@ -1,13 +1,13 @@
-package base.datasource;
+package base.datasource.sqlDb;
 
-import base.datasource.entity.Group;
-import base.datasource.entity.Student;
-import base.datasource.entity.University;
-import base.datasource.entity.RemoveUser;
-import base.datasource.entity.jpa.GroupRepository;
-import base.datasource.entity.jpa.StudentRepository;
-import base.datasource.entity.jpa.UniversityRepository;
-import base.datasource.entity.jpa.UserRepository;
+import base.datasource.sqlDb.entity.Group;
+import base.datasource.sqlDb.entity.Student;
+import base.datasource.sqlDb.entity.University;
+import base.datasource.sqlDb.entity.RemoveUser;
+import base.datasource.sqlDb.entity.jpa.GroupRepository;
+import base.datasource.sqlDb.entity.jpa.StudentRepository;
+import base.datasource.sqlDb.entity.jpa.UniversityRepository;
+import base.datasource.sqlDb.entity.jpa.UserRepository;
 import base.utils.logging.LoggerService;
 import base.utils.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;

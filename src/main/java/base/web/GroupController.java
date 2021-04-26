@@ -1,6 +1,6 @@
 package base.web;
 
-import base.datasource.entity.Group;
+import base.datasource.sqlDb.entity.Group;
 import base.utils.logging.LogExecutionTime;
 import base.web.config.HandlerExceptionNotFound;
 import io.swagger.annotations.ApiOperation;

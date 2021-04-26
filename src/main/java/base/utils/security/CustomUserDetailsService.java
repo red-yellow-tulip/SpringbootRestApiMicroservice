@@ -1,10 +1,8 @@
 package base.utils.security;
 
-import base.datasource.DatabaseService;
-import base.datasource.entity.RemoveUser;
+import base.datasource.sqlDb.DatabaseService;
+import base.datasource.sqlDb.entity.RemoveUser;
 import base.utils.logging.LoggerService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package rest;
 
-import base.datasource.entity.Group;
+import base.datasource.sqlDb.entity.Group;
 import base.web.config.SourceParameterWrapperGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

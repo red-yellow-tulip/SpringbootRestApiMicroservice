@@ -1,9 +1,8 @@
 package rest.helper;
 
 import base.StudentMicroserviceRunner;
-import base.datasource.DatabaseService;
+import base.datasource.sqlDb.DatabaseService;
 import base.utils.logging.LoggerService;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;

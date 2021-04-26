@@ -1,6 +1,6 @@
 package base;
 
-import base.datasource.DatabaseService;
+import base.datasource.sqlDb.DatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ public class StudentMicroserviceRunner implements  ApplicationRunner{
     private DatabaseService databaseService;
 
     @Value("${server.port}")
-    String port;
+    private String port;
 
     @Value("${spring.application.name}")
-    String name;
+    private String name;
 
     public static void main(String[] args) {
         SpringApplication.run(StudentMicroserviceRunner.class, args);

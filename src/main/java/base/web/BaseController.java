@@ -1,10 +1,8 @@
 package base.web;
 
-import base.datasource.DatabaseService;
-import base.utils.logging.LoggerAspectConfig;
+import base.datasource.memDb.RedisService;
+import base.datasource.sqlDb.DatabaseService;
 import base.utils.logging.LoggerService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,6 +15,9 @@ public abstract class BaseController {
 
     @Autowired
     protected DatabaseService databaseService;
+
+    @Autowired
+    protected RedisService redisService;
 
     @Resource
     private LoggerService loggerService;

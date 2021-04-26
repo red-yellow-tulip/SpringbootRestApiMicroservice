@@ -1,9 +1,9 @@
 package base;
 
-import base.datasource.DatabaseService;
-import base.datasource.entity.Group;
-import base.datasource.entity.Student;
-import base.datasource.entity.University;
+import base.datasource.sqlDb.DatabaseService;
+import base.datasource.sqlDb.entity.Group;
+import base.datasource.sqlDb.entity.Student;
+import base.datasource.sqlDb.entity.University;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;

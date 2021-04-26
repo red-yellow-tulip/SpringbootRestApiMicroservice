@@ -1,6 +1,6 @@
 package base.web;
 
-import base.datasource.entity.Student;
+import base.datasource.sqlDb.entity.Student;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpHeaders;
