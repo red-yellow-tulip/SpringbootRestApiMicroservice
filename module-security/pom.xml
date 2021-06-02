@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>StudentMicroService_boot</artifactId>
+        <groupId>groupId</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>module-security</artifactId>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+
+        <!-- security-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
+        </dependency>
+
+        <!--h2database-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+
+            <properties>
+                <spring.datasource.driverClassName>org.postgresql.Driver</spring.datasource.driverClassName>
+                <spring.datasource.url>jdbc:postgresql://127.0.0.1:5432/university?currentSchema=university_schemas</spring.datasource.url>
+                <spring.datasource.username>university</spring.datasource.username>
+                <spring.datasource.password>university</spring.datasource.password>
+                <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
+                <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+                <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
+                <server.port>17005</server.port>
+                <spring.application.name>studentMicroservice</spring.application.name>
+                <logging.file.path>/logs</logging.file.path>
+                <logging.level.root>info</logging.level.root>
+
+                <spring.liquibase.enabled>true</spring.liquibase.enabled>
+                <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+                <spring.liquibase.contexts>dev</spring.liquibase.contexts>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>test.postgres</id>
+            <properties>
+                <spring.datasource.driverClassName>org.postgresql.Driver</spring.datasource.driverClassName>
+                <spring.datasource.url>jdbc:postgresql://localhost:5432/university?currentSchema=university_schemas
+                </spring.datasource.url>
+                <spring.datasource.username>university</spring.datasource.username>
+                <spring.datasource.password>university</spring.datasource.password>
+                <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
+                <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+                <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
+                <server.port>17005</server.port>
+                <spring.application.name>testController</spring.application.name>
+                <logging.file.path>/logs</logging.file.path>
+                <logging.level.root>info</logging.level.root>
+
+                <spring.liquibase.enabled>true</spring.liquibase.enabled>
+                <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+                <spring.liquibase.contexts>test</spring.liquibase.contexts>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>test.h2</id>
+            <properties>
+                <activatedProperties>test.h2</activatedProperties>
+
+                <spring.datasource.driverClassName>org.h2.Driver</spring.datasource.driverClassName>
+                <spring.datasource.url>jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=true;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS university_schemas</spring.datasource.url>
+                <spring.jpa.database-platform>org.hibernate.dialect.H2Dialect</spring.jpa.database-platform>
+                <spring.datasource.username>university</spring.datasource.username>
+                <spring.datasource.password>university</spring.datasource.password>
+                <server.port>17005</server.port>
+                <spring.application.name>testController</spring.application.name>
+                <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+                <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
+
+                <logging.file.path>/logs</logging.file.path>
+                <logging.level.root>info</logging.level.root>
+
+                <spring.liquibase.enabled>true</spring.liquibase.enabled>
+                <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+                <spring.liquibase.contexts>test</spring.liquibase.contexts>
+            </properties>
+        </profile>
+
+    </profiles>
+
+
+</project>
