@@ -13,6 +13,7 @@
         <module>module-actuator</module>
         <module>module-security</module>
         <module>module-data-cache</module>
+        <module>module-kafka</module>
     </modules>
 
     <properties>

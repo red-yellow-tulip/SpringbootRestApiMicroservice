@@ -1,4 +1,4 @@
-package app.utils;
+package app.config;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
