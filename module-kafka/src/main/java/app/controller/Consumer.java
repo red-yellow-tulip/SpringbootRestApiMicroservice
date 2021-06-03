@@ -18,7 +18,10 @@ public class Consumer {
     private ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(Consumer.class);
 
-    @KafkaListener(topics = "topic1")
+    private long counter;
+    private UserDto prevUserDto;
+
+    @KafkaListener(topics = "topic1", containerFactory = "kafkaListenerContainerFactory")
     public void receive(String msg) throws JsonProcessingException {
 
         UserDto userDto = objectMapper.readValue(msg, UserDto.class);
@@ -26,16 +29,29 @@ public class Consumer {
         handleMessage(userDto);
     }
 
-    @KafkaListener(topics = "topic2", containerFactory = "kafkaListenerContainerFactory")
-    public void receive(ConsumerRecord<Long, String> record) throws JsonProcessingException {
 
-        UserDto userDto = objectMapper.readValue(record.value(), UserDto.class);
+    @KafkaListener(topics = "topic2", containerFactory = "userKafkaListenerContainerFactory")
+    public void receive(ConsumerRecord<Long, UserDto> record) {
+
+        UserDto userDto = record.value();
         LOGGER.info("received partition='{}, key='{}', 'UserDto='{}'", record.partition(),record.key(),userDto);
         handleMessage(userDto);
     }
 
     private void handleMessage(UserDto userDto) {
+        counter++;
+        prevUserDto = userDto;
 
+        long t = userDto.getAge();
+        prevUserDto.setAge(++t);
+    }
+
+    public long getCounter() {
+        return counter;
+    }
+
+    public UserDto getPrevUserDto() {
+        return prevUserDto;
     }
 
     @Bean

@@ -18,12 +18,13 @@ public class Producer {
     @Autowired
     private KafkaTemplate<Long, UserDto> kafkaTemplate;
 
-    public void send(String topic, Long key, @Nullable UserDto data) {
+    public boolean send(String topic, Long key, @Nullable UserDto data) {
 
         LOGGER.info("sending topic='{}' to key='{}' to data='{}'", topic, key,data);
 
         ListenableFuture<SendResult<Long, UserDto>> future = kafkaTemplate.send(topic, key, data);
         future.addCallback(System.out::println, System.err::println);
         kafkaTemplate.flush();
+        return future.isDone();
     }
 }
