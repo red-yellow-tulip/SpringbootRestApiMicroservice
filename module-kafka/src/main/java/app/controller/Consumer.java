@@ -1,6 +1,6 @@
 package app.controller;
 
-import app.dto.UserDto;
+import app.controller.dto.UserDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -57,7 +57,7 @@ public class Consumer {
     @Bean
     public NewTopic topic() {
         return TopicBuilder.name("topic1")
-                .partitions(10)
+                .partitions(10) // парттиции - по сути копии лог файлов с сообщениями
                 .replicas(1)
                 .build();
     }

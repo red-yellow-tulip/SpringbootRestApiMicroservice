@@ -164,27 +164,27 @@
 
 
     <profiles>
-        <profile>
-            <id>dev</id>
+    <profile>
+        <id>dev</id>
 
-            <properties>
-                <spring.datasource.driverClassName>org.postgresql.Driver</spring.datasource.driverClassName>
-                <spring.datasource.url>jdbc:postgresql://127.0.0.1:5432/university?currentSchema=university_schemas</spring.datasource.url>
-                <spring.datasource.username>university</spring.datasource.username>
-                <spring.datasource.password>university</spring.datasource.password>
-                <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
-                <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
-                <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
-                <server.port>17003</server.port>
-                <spring.application.name>studentMicroservice</spring.application.name>
-                <logging.file.path>/logs</logging.file.path>
-                <logging.level.root>info</logging.level.root>
+        <properties>
+            <spring.datasource.driverClassName>org.postgresql.Driver</spring.datasource.driverClassName>
+            <spring.datasource.url>jdbc:postgresql://127.0.0.1:5432/university?currentSchema=university_schemas</spring.datasource.url>
+            <spring.datasource.username>university</spring.datasource.username>
+            <spring.datasource.password>university</spring.datasource.password>
+            <spring.jpa.database-platform>org.hibernate.dialect.PostgreSQL10Dialect</spring.jpa.database-platform>
+            <spring.jpa.generate-ddl>false</spring.jpa.generate-ddl>
+            <spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
+            <server.port>17003</server.port>
+            <spring.application.name>studentMicroservice</spring.application.name>
+            <logging.file.path>/logs</logging.file.path>
+            <logging.level.root>info</logging.level.root>
 
-                <spring.liquibase.enabled>true</spring.liquibase.enabled>
-                <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
-                <spring.liquibase.contexts>dev</spring.liquibase.contexts>
-            </properties>
-        </profile>
+            <spring.liquibase.enabled>true</spring.liquibase.enabled>
+            <spring.liquibase.change-log>classpath:db/changelog/changelog-master.yaml</spring.liquibase.change-log>
+            <spring.liquibase.contexts>dev</spring.liquibase.contexts>
+        </properties>
+    </profile>
 
         <profile>
             <id>test.postgres</id>

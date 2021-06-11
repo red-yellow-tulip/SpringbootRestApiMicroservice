@@ -1,7 +1,7 @@
 package app.config;
 
 import app.controller.Producer;
-import app.dto.UserDto;
+import app.controller.dto.UserDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;

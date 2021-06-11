@@ -1,6 +1,6 @@
 package app.config;
 
-import app.dto.UserDto;
+import app.controller.dto.UserDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;

@@ -22,7 +22,7 @@ public class Swagger2SpringBoot {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("app.controller"))
+                .apis(RequestHandlerSelectors.basePackage("app.app.controller"))
                 //.paths(PathSelectors.any())
                 .paths((PathSelectors.regex("/calc.*"))
                 )
