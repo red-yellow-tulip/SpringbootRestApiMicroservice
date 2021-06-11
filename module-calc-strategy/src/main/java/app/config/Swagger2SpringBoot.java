@@ -13,7 +13,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 
-@SpringBootApplication
 @EnableSwagger2
 public class Swagger2SpringBoot {
 
@@ -22,7 +21,7 @@ public class Swagger2SpringBoot {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("app.app.controller"))
+                .apis(RequestHandlerSelectors.basePackage("app.controller"))
                 //.paths(PathSelectors.any())
                 .paths((PathSelectors.regex("/calc.*"))
                 )

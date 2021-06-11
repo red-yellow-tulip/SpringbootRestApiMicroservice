@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -39,15 +41,10 @@ public class WebClientConfiguration {
                 });
 
         return WebClient.builder()
-                .clientConnector(connector())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .baseUrl(BASE_URL+port)
+                .defaultHeader("apikey", "somekey")
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
                 .build();
     }
-
-    private ClientHttpConnector connector() {
-        return new
-                ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection()));
-    }
-
 }
