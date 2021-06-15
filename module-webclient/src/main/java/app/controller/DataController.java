@@ -1,20 +1,18 @@
 package app.controller;
 
-import app.client.service.DataClient;
+import app.controller.dto.RequestDTO;
+import app.controller.dto.ResponseDTO;
 import app.controller.mapper.Mapper;
 import app.controller.service.DataService;
+import app.controller.utils.Request;
+import app.controller.utils.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import app.controller.dto.*;
-import app.controller.utils.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.time.Duration;
 
 @RestController
 @RequestMapping("/data")
@@ -36,21 +34,25 @@ public class DataController {
         this.mapper = mapper;
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+
+    @RequestMapping(value = "/all/{count}", headers="Accept=*/*", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
-    public Flux<ResponseDTO> getAllData() {
+    public Flux<ResponseDTO> getAllData( @PathVariable int count) {
 
-        Flux<ResponseDTO>  res = dataService.getAll();
+        log.info("method GET: /data/all" );
+
+        Flux<ResponseDTO>  res = dataService.getAll(count);
 
         return  res;
-
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     @CrossOrigin
     public Mono<ResponseDTO> getData(@PathVariable  String id) {
+
+        log.info("method GET: /data/{id}? id = " + id );
 
         if (id == null || id.isEmpty())
             return Mono.error(new RuntimeException("id is bad"));
@@ -67,6 +69,8 @@ public class DataController {
     @CrossOrigin
     public Mono<ResponseDTO> postData(@RequestBody RequestDTO requestTO, @PathVariable String id) {
 
+        log.info("method POST: /data/{id}? id = " + id );
+
         if (id == null || id.isEmpty())
             return Mono.error(new RuntimeException("id is bad"));
 
@@ -81,4 +85,5 @@ public class DataController {
 
         return Mono.just(responseDTO);
     }
+
 }

@@ -1,6 +1,10 @@
 import app.ApplicationRunner;
 import app.client.service.DataClient;
+import app.controller.dto.RequestDTO;
 import app.controller.dto.ResponseDTO;
+import app.controller.mapper.Mapper;
+import app.controller.utils.Request;
+import app.controller.utils.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,9 +37,8 @@ public class TestController {
 
     private String endpoint = "http://localhost:%s/data/";
 
-
     @Test
-    public void TestGetBlock() {
+    public void TestGetByIdBlock() {
 
         String id = "1";
         ResponseDTO response = dataClient.getDataByIdBlock(String.format(endpoint+id,port));
@@ -43,46 +48,41 @@ public class TestController {
     }
 
     @Test
-    public void TestGetAsync() {
+    public void TestPostByIdBlock() {
 
-        String id = "2";
-        Mono<ResponseDTO> response = dataClient.getDataByIdAsync(String.format(endpoint+id,port));
-        response.subscribe(r -> {
-            assertEquals(r.getStrRus(), id);
-        });
+        String id = "20";
+        String url = String.format(endpoint+id,port);
 
-        assertTrue(response.blockOptional().isPresent());
-        assertEquals(response.blockOptional().get().getStrEng(), id);
+        RequestDTO requestDTO= RequestDTO.builder()
+                .date(LocalDate.now())
+                .strEng("Eng20")
+                .strRus("Rus20")
+                .val(BigDecimal.TEN)
+                .build();
+        ResponseDTO response = dataClient.postDataByIdBlock(url,requestDTO);
+
+        assertNotNull(response);
+        assertEquals(response.getStrRus(), "RUS20");
     }
 
     @Test
     public void TestGetAllAsync() throws InterruptedException {
 
-        String urlGetAll = "all";
+
+        int count = 50;
+        String urlGetAll = String.format(endpoint+"all/"+count,port);
+
         AtomicLong counter = new AtomicLong();
 
-        Flux<ResponseDTO> response = dataClient.getAllDataAsync(String.format(endpoint+urlGetAll,port));
-
-       /* webClient
-                .get()
-                .uri(String.format(endpoint+urlGetAll,port)).exchange().subscribe(f -> {
-
-            System.out.println(f);
-        });*/
+        Flux<ResponseDTO> response = dataClient.getAllDataAsync(urlGetAll);
 
         response.subscribe(r -> {
             counter.incrementAndGet();
             assertEquals(r.getStrRus(), String.valueOf(counter));
-             System.out.println(r);
+            System.out.println(r);
         });
+        TimeUnit.SECONDS.sleep(1);
 
-        TimeUnit.SECONDS.sleep(2);
-
-
-        //assertEquals(counter, 100);
+        assertEquals(counter.intValue(), count);
     }
-
-
-
-
 }

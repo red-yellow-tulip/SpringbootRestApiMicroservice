@@ -40,7 +40,7 @@ public class DataService {
                 .build();
     }
 
-    public Flux<ResponseDTO> getAll() {
-        return Flux.range(1,100).map(x -> mapper.toResponseDTO(execute(String.valueOf(x))));
+    public Flux<ResponseDTO> getAll(int count) {
+        return Flux.range(1,count).map(x -> mapper.toResponseDTO(execute(String.valueOf(x))));
     }
 }

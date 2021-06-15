@@ -66,6 +66,23 @@ public class DataClient {
                 .block();
     }
 
+    public Mono<ResponseDTO> postDataById(final String endpoint, RequestDTO requestDTO) {
+        return webClient
+                .post()
+                .uri(endpoint)
+                .body(Mono.just(requestDTO), RequestDTO.class)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError,
+                        error -> Mono.error(new RuntimeException("API not found")))
+                .onStatus(HttpStatus::is5xxServerError,
+                        error -> Mono.error(new RuntimeException("Server is not responding")))
+                .bodyToMono(ResponseDTO.class)
+                .doOnError(error -> log.error("An error has occurred {}", error.getMessage()))
+                //.onErrorResume(error -> Mono.just(new User()))
+                ;
+    }
+
+
     public Mono<ResponseDTO> postDataByIdAsync(final String endpoint, RequestDTO requestDTO) {
         return webClient
                 .post()
@@ -101,8 +118,8 @@ public class DataClient {
         return webClient
                 .get()
                 .uri(endpoint)
-                .accept(MediaType.APPLICATION_STREAM_JSON)
                 .retrieve()
-                .bodyToFlux(ResponseDTO.class);
+                .bodyToFlux(ResponseDTO.class)
+                .doOnError(error -> log.error("An error has occurred {}", error.getMessage()));
     }
 }
