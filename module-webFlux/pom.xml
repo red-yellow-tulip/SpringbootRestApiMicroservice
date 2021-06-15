@@ -2,40 +2,52 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>StudentMicroService_boot</artifactId>
+        <groupId>groupId</groupId>
+        <version>1.0</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
-    <artifactId>StudentMicroService_boot</artifactId>
-    <version>1.0</version>
-    <modules>
-        <module>module-redis</module>
-        <module>module-calc-strategy</module>
-        <module>module-actuator</module>
-        <module>module-security</module>
-        <module>module-data-cache</module>
-        <module>module-kafka</module>
-        <module>module-webclient</module>
-        <module>module-webFlux</module>
-    </modules>
+    <artifactId>module-webcFlux</artifactId>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
-
-    <packaging>pom</packaging>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.0</version>
-    </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
+
 
     <build>
         <plugins>
@@ -87,6 +99,20 @@
         </plugins>
 
     </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <properties>
+                <activatedProperties>default</activatedProperties>
+                <server.port>17008</server.port>
+                <spring.application.name>DataMicroservice</spring.application.name>
+                <logging.file.path>/logs</logging.file.path>
+                <logging.level.root>info</logging.level.root>
+
+            </properties>
+        </profile>
+    </profiles>
 
 
 

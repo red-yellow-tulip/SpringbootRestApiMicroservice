@@ -1,9 +1,8 @@
-package app.controller.utils;
+package app.utils.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -11,13 +10,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Response {
+@Data
+public class ResponseDTO implements Serializable {
     private String strEng;
     private String strRus;
     private BigDecimal val;
     private LocalDate date;
 
-    public Response() {
+    public ResponseDTO() {
 
     }
 }

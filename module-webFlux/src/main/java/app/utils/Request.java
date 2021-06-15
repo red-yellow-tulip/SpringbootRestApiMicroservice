@@ -1,6 +1,10 @@
-package app.controller.dto;
+package app.utils;
 
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,14 +13,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-@Data
-public class ResponseDTO {
+public class Request {
+
     private String strEng;
     private String strRus;
     private BigDecimal val;
     private LocalDate date;
 
-    public ResponseDTO() {
+
+    public Request() {
 
     }
 }

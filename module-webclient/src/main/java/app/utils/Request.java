@@ -1,4 +1,5 @@
-package app.controller.dto;
+package app.utils;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +13,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RequestDTO {
+public class Request {
+
     private String strEng;
     private String strRus;
     private BigDecimal val;
     private LocalDate date;
 
-    public RequestDTO() {
+
+    public Request() {
 
     }
 }

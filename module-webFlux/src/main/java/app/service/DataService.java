@@ -1,9 +1,9 @@
-package app.controller.service;
+package app.service;
 
-import app.controller.dto.ResponseDTO;
-import app.controller.mapper.Mapper;
-import app.controller.utils.Request;
-import app.controller.utils.Response;
+import app.mapper.Mapper;
+import app.utils.Request;
+import app.utils.Response;
+import app.utils.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

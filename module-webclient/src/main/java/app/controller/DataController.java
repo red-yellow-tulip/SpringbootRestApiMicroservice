@@ -1,11 +1,11 @@
 package app.controller;
 
-import app.controller.dto.RequestDTO;
-import app.controller.dto.ResponseDTO;
-import app.controller.mapper.Mapper;
-import app.controller.service.DataService;
-import app.controller.utils.Request;
-import app.controller.utils.Response;
+import app.mapper.Mapper;
+import app.service.DataService;
+import app.utils.Request;
+import app.utils.Response;
+import app.utils.dto.RequestDTO;
+import app.utils.dto.ResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

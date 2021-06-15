@@ -1,9 +1,9 @@
-package app.controller.mapper;
+package app.mapper;
 
-import app.controller.dto.RequestDTO;
-import app.controller.dto.ResponseDTO;
-import app.controller.utils.Request;
-import app.controller.utils.Response;
+import app.utils.dto.RequestDTO;
+import app.utils.dto.ResponseDTO;
+import app.utils.Request;
+import app.utils.Response;
 import org.springframework.stereotype.Component;
 
 @Component
