@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 
 @Service
@@ -41,6 +42,10 @@ public class DataService {
     }
 
     public Flux<ResponseDTO> getAll(int count) {
-        return Flux.range(1,count).map(x -> mapper.toResponseDTO(execute(String.valueOf(x))));
+        return Flux
+                .range(1,count)
+                //.delayElements(Duration.ofMillis(250))
+                .map(x -> mapper.toResponseDTO(execute(String.valueOf(x))))
+                ;
     }
 }

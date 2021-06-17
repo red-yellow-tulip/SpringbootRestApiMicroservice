@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -12,6 +13,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(classes = {ApplicationRunner.class})
 public class TestFluxExample {
@@ -88,8 +90,66 @@ public class TestFluxExample {
     }
 
     @Test
+    public void Test6_1()  {
+        List<String> iterable = Arrays.asList("A", "B", "C",null,"E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorResume(error -> Mono.just("d"))   //  <----  A B C d
+                .subscribe(
+                    elem -> log.info(String.valueOf(elem))
+        );
+    }
+
+    @Test
+    public void Test6_2()  {
+        List<String> iterable = Arrays.asList("A", "B", "C",null,"E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorResume(error -> {
+                            if (error instanceof NullPointerException)
+                                return Mono.just("d");           //  <----  A B C d
+                            else
+                                return Flux.error(error);
+                })
+                .subscribe(
+                        elem -> log.info(String.valueOf(elem))
+                );
+    }
+
+    @Test
+    public void Test6_3()  {
+        List<String> iterable = Arrays.asList("A", "B", "C",null,"E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorReturn(e -> e instanceof  NullPointerException,"d")    //  <----  A B C d
+                .subscribe(
+                        elem -> log.info(String.valueOf(elem))
+                );
+    }
+
+    @Test
+    public void Test6_4() throws InterruptedException {
+        List<String> iterable = Arrays.asList("A", "B", "C","D","E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorReturn(e -> e instanceof  NullPointerException,"d")
+                .elapsed()
+                .retry(2)         //  <----  A B C d
+                .subscribe(
+                        elem -> log.info(String.valueOf(elem))
+                );
+
+        TimeUnit.SECONDS.sleep(2);
+    }
+
+
+    @Test
     public void Test7() {
-        Flux<Integer> sequence = Flux.range(0, 100).publishOn(Schedulers./*single()*/parallel());  //  <----
+        Flux<Integer> sequence = Flux.range(0, 100).publishOn(Schedulers.newSingle("1")/*single()*/  /*parallel()*/);  //  <----
         //вызовы onNext, onComplete и onError будут происходить в шедулере single.
         sequence.subscribe(n -> {
             System.out.println("n = " + n);
@@ -154,5 +214,135 @@ public class TestFluxExample {
                 );
 
     }
+
+    @Test
+    public void Test12() throws InterruptedException {
+
+        Flux.<String>generate(
+                sink -> {
+                    sink.next(UUID.randomUUID().toString());
+                })
+                .delayElements(Duration.ofMillis(100))
+                .take(10)
+                .subscribe(System.out::println);
+
+
+        TimeUnit.SECONDS.sleep(2);
+    }
+
+    @Test
+    public void Test13()  {
+
+        Flux.generate(
+                () -> 1234,
+                (state, sink) -> {
+                    if (state > 1266)
+                        sink.complete();
+                    else {sink.next("state: "+ state);}
+                    return state + 3;
+                })
+                .take(10)
+                .subscribe(System.out::println);
+    }
+
+    @Test
+    public void Test14() {
+
+        Flux<String> source = Flux.generate(
+                () -> 1234,
+                (state, sink) -> {
+                    if (state > 1266)
+                        sink.complete();
+                    else {
+                        sink.next("state: " + state);
+                    }
+                    return state + 3;
+                });
+
+        Flux.create(
+                sink -> {
+                    source.subscribe(new BaseSubscriber<Object>() {
+                        @Override
+                        protected void hookOnNext(Object value) {
+                            sink.next("hookOnNext: "+value);
+                        }
+
+                        @Override
+                        protected void hookOnComplete() {
+                            sink.complete();
+                        }
+                    });
+                })
+                .subscribe(System.out::println);
+
+    }
+
+    @Test
+    public void Test15() throws InterruptedException {
+
+        Flux<String> source = Flux.generate(
+                () -> 1234,
+                (state, sink) -> {
+                    if (state > 1266)
+                        sink.complete();
+                    else {
+                        sink.next("state: " + state);
+                    }
+                    return state + 3;
+                });
+
+        Flux.create(
+                sink -> {
+                    sink.onRequest(r -> {
+                       sink.next("request to DB" + source.blockFirst());
+                    });
+                })
+                .subscribe(System.out::println);
+
+        TimeUnit.SECONDS.sleep(1);
+    }
+
+    @Test
+    public void Test16() throws InterruptedException {
+
+        Flux<String> first = Flux
+                .just("A","B")
+                .repeat();
+
+        Flux<String> second = Flux
+                .just("1","2","3","4","5","6","7")
+                .zipWith(
+                        first,
+                        (s,f) -> String.format("%s:%s",f,s)
+                 );
+
+        second
+                .subscribe(System.out::println);
+    }
+
+    @Test
+    public void Test17() throws InterruptedException {
+
+
+        Flux<String> second = Flux
+              .just("1","2","3","4","5","6","7");
+        second
+            .delayElements(Duration.ofMillis(1300))
+            .timeout(Duration.ofSeconds(1))
+            .onErrorResume(throwable ->
+                    Flux
+                            .interval(Duration.ofMillis(100))
+                            .map( s -> String.valueOf(s)+" : throwable")
+            )
+            .skip(3)
+            .subscribe(
+                    v -> System.out.println(v),
+                    e -> System.err.println(e),
+                    () -> System.err.println("finish")
+                    );
+
+        TimeUnit.SECONDS.sleep(3);
+    }
+
 
 }

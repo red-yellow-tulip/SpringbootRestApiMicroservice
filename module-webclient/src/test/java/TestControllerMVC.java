@@ -7,17 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(classes = {ApplicationRunner.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestControllerMVC {
@@ -44,6 +47,22 @@ public class TestControllerMVC {
     }
 
     @Test
+    public void TestGetByIdAsync() throws InterruptedException {
+
+        String id = "99";
+        AtomicReference<String> s = new AtomicReference<>("");
+        Flux<ResponseDTO> response = dataClient.getDataByIdAsync(String.format(endpoint +"as/"+ id, port));
+        response
+                .log()
+                .subscribe( x -> {
+                    assertNotNull(x);
+                    assertEquals(x.getStrEng(), "999");
+                    }
+        );
+        TimeUnit.SECONDS.sleep(1);
+    }
+
+    @Test
     public void TestPostByIdBlock() {
 
         String id = "20";
@@ -64,7 +83,7 @@ public class TestControllerMVC {
     @Test
     public void TestGetAllAsync() throws InterruptedException {
 
-        int count = 50;
+        int count = 25;
         String urlGetAll = String.format(endpoint + "all/" + count, port);
 
         AtomicLong counter = new AtomicLong();
@@ -76,7 +95,7 @@ public class TestControllerMVC {
             assertEquals(r.getStrRus(), String.valueOf(counter));
             System.out.println(r);
         });
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(3);
 
         assertEquals(counter.intValue(), count);
     }
@@ -91,7 +110,7 @@ public class TestControllerMVC {
         webClient
                 .get()
                 .uri(urlGetAll)
-                .accept(APPLICATION_JSON)
+               .accept(MediaType.TEXT_EVENT_STREAM)
                 .exchangeToFlux(response -> {  //exchangeToFlux   - получить тело + заголовок  <--->  retrieve - получить тело
                             if (response.statusCode().equals(HttpStatus.OK)) {
                                 return response.bodyToFlux(ResponseDTO.class);
@@ -108,10 +127,8 @@ public class TestControllerMVC {
                 .subscribe(
                         response -> System.out.println("GET: " + response));
 
-        TimeUnit.SECONDS.sleep(1);
-
+        TimeUnit.SECONDS.sleep(3);
         assertEquals(counter.intValue(), count);
-
     }
 
 }

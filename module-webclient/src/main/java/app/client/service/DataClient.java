@@ -14,10 +14,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import java.time.Duration;
 
-import static org.springframework.core.ResolvableType.forClassWithGenerics;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.BodyExtractors.toFlux;
-
 @Service
 @AllArgsConstructor
 public class DataClient {
@@ -32,20 +28,12 @@ public class DataClient {
 
     }
 
-    public Mono<ResponseDTO> getDataByIdAsync(final String endpoint) {
+    public Flux<ResponseDTO> getDataByIdAsync(final String endpoint) {
         return webClient
                 .get()
                 .uri(endpoint)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new RuntimeException("API not found")))
-                .onStatus(HttpStatus::is5xxServerError,
-                        error -> Mono.error(new RuntimeException("Server is not responding")))
-                .bodyToMono(ResponseDTO.class)
-                .doOnError(error -> log.error("An error has occurred {}", error.getMessage())) // срабатывает, когда Mono завершается с ошибкой.
-                //.onErrorResume(error -> Mono.just(new User()))// при возникновении ошибки подписывается на резервного издателя,
-                // используя функцию для выбора действия в зависимости от ошибки.
-                .retryWhen(Retry.fixedDelay(3, Duration.ofMillis(100))); // 3 попытки через 100мс
+                .bodyToFlux(ResponseDTO.class);
     }
 
     public ResponseDTO postDataByIdBlock(final String endpoint, RequestDTO requestDTO) {
@@ -54,13 +42,8 @@ public class DataClient {
                 .uri(endpoint)
                 .body(Mono.just(requestDTO), RequestDTO.class)
                 .retrieve()
-              /*  .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new RuntimeException("API not found")))
-                .onStatus(HttpStatus::is5xxServerError,
-                        error -> Mono.error(new RuntimeException("Server is not responding")))*/
                 .bodyToMono(ResponseDTO.class)
                 .doOnError(error -> log.error("An error has occurred {}", error.getMessage()))
-                //.onErrorResume(error -> Mono.just(new User()))
                 .block();
     }
 
@@ -76,7 +59,6 @@ public class DataClient {
                         error -> Mono.error(new RuntimeException("Server is not responding")))
                 .bodyToMono(ResponseDTO.class)
                 .doOnError(error -> log.error("An error has occurred {}", error.getMessage()))
-                //.onErrorResume(error -> Mono.just(new User()))
                 ;
     }
 
@@ -93,7 +75,6 @@ public class DataClient {
                         error -> Mono.error(new RuntimeException("Server is not responding")))
                 .bodyToMono(ResponseDTO.class)
                 .doOnError(error -> log.error("An error has occurred {}", error.getMessage()))
-                //.onErrorResume(error -> Mono.just(new User()))
                 .retryWhen(Retry.fixedDelay(3, Duration.ofMillis(100)));
     }
 
@@ -102,13 +83,8 @@ public class DataClient {
                 .get()
                 .uri(endpoint)
                 .retrieve()
-              /*  .onStatus(HttpStatus::is4xxClientError,
-                        error -> Mono.error(new RuntimeException("API not found")))
-                .onStatus(HttpStatus::is5xxServerError,
-                        error -> Mono.error(new RuntimeException("Server is not responding")))*/
                 .bodyToMono(ResponseDTO.class)
                 .doOnError(error -> log.error("An error has occurred {}", error.getMessage()))
-                //.onErrorResume(error -> Mono.just(new User()))
                 .block();
     }
 
@@ -116,7 +92,6 @@ public class DataClient {
         return webClient
                 .get()
                 .uri(endpoint)
-                .accept(APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(ResponseDTO.class)
                 .doOnError(error -> log.error("An error has occurred {}", error.getMessage()));

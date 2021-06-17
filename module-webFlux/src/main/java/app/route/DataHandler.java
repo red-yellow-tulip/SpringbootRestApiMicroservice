@@ -59,8 +59,12 @@ public class DataHandler {
 
         log.info("method GET: /route-data/all/{count}" );
 
-        return  ServerResponse.ok().contentType(APPLICATION_JSON)
-                .body(fromPublisher(dataService.getAll(count), ResponseDTO.class));
+        Flux<ResponseDTO> response = dataService.getAll(count);
+
+        return  ServerResponse
+                .ok()
+                .contentType(APPLICATION_JSON)
+                .body(response, ResponseDTO.class);
     }
 
     public Mono<ServerResponse> post(ServerRequest serverRequest) {
