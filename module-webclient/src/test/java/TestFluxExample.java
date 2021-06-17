@@ -12,6 +12,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 
 @SpringBootTest(classes = {ApplicationRunner.class})
 public class TestFluxExample {
@@ -88,8 +91,66 @@ public class TestFluxExample {
     }
 
     @Test
+    public void Test6_1()  {
+        List<String> iterable = Arrays.asList("A", "B", "C",null,"E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorResume(error -> Mono.just("d"))   //  <----  A B C d
+                .subscribe(
+                    elem -> log.info(String.valueOf(elem))
+        );
+    }
+
+    @Test
+    public void Test6_2()  {
+        List<String> iterable = Arrays.asList("A", "B", "C",null,"E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorResume(error -> {
+                            if (error instanceof NullPointerException)
+                                return Mono.just("d");           //  <----  A B C d
+                            else
+                                return Flux.error(error);
+                })
+                .subscribe(
+                        elem -> log.info(String.valueOf(elem))
+                );
+    }
+
+    @Test
+    public void Test6_3()  {
+        List<String> iterable = Arrays.asList("A", "B", "C",null,"E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorReturn(e -> e instanceof  NullPointerException,"d")    //  <----  A B C d
+                .subscribe(
+                        elem -> log.info(String.valueOf(elem))
+                );
+    }
+
+    @Test
+    public void Test6_4() throws InterruptedException {
+        List<String> iterable = Arrays.asList("A", "B", "C","D","E","F","G");
+        Flux<String> sequence = Flux.fromIterable(iterable);
+
+        sequence
+                .onErrorReturn(e -> e instanceof  NullPointerException,"d")
+                .elapsed()
+                .retry(2)         //  <----  A B C d
+                .subscribe(
+                        elem -> log.info(String.valueOf(elem))
+                );
+
+        TimeUnit.SECONDS.sleep(2);
+    }
+
+
+    @Test
     public void Test7() {
-        Flux<Integer> sequence = Flux.range(0, 100).publishOn(Schedulers./*single()*/parallel());  //  <----
+        Flux<Integer> sequence = Flux.range(0, 100).publishOn(Schedulers.newSingle("1")/*single()*/  /*parallel()*/);  //  <----
         //вызовы onNext, onComplete и onError будут происходить в шедулере single.
         sequence.subscribe(n -> {
             System.out.println("n = " + n);
