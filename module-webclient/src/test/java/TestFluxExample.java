@@ -149,7 +149,7 @@ public class TestFluxExample {
 
     @Test
     public void Test7() {
-        Flux<Integer> sequence = Flux.range(0, 100).publishOn(Schedulers.newSingle("1")/*single()*/  /*parallel()*/);  //  <----
+        Flux<Integer> sequence = Flux.range(0, 100).publishOn(Schedulers./*single()*/parallel());  //  <----
         //вызовы onNext, onComplete и onError будут происходить в шедулере single.
         sequence.subscribe(n -> {
             System.out.println("n = " + n);
